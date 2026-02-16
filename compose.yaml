@@ -1,0 +1,94 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - PORT=2000
+      - OIDC_PROVIDOR=http://localhost:7003
+      - OIDC_CLIENT_ID=client-id
+      - OIDC_CLIENT_SECRET=client-secret
+      - OIDC_REDIRECT_URL=http://localhost:2000/oidc/callback
+      - DATABASE_URL=postgres://bea:bea@db:5432/bea
+    ports: [2000:2000]
+    configs:
+      - source: nginx.conf
+        target: /etc/nginx/nginx.conf
+    depends_on:
+      db:
+        condition: service_healthy
+    develop:
+      watch:
+        - path: .
+          action: rebuild
+  db:
+    image: "postgres:latest"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: bea
+      POSTGRES_PASSWORD: bea
+      POSTGRES_DB: bea
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "sh -c 'pg_isready -d bea -U bea'"
+      interval: 1s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  nyckeln:
+    image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
+    ports:
+      - 7003:7003
+    configs:
+      - source: nyckeln.yaml
+        target: /config.yaml
+
+configs:
+  nginx.conf:
+    content: |
+      events {}
+
+      http {
+        server {
+          listen 7003;
+
+          location / {
+            proxy_pass http://nyckeln:7003;
+          }
+        }
+      }
+
+  nyckeln.yaml:
+    content: |
+      clients:
+        - id: client-id
+          secret: client-secret
+          redirect_uris:
+            - http://localhost:2000/oidc/callback
+
+      users:
+        - ug_kth_id: some-id
+          kth_id: turetek
+          email: turetek@kth.se
+          first_name: Ture
+          family_name: Teknolog
+          year_tag: D-83
+        - ug_kth_id: some-other-id
+          kth_id: diadat
+          email: diadat@kth.se
+          first_name: Diana
+          family_name: Datalog
+          year_tag: D-83
+
+      hive:
+        groups:
+          - name: Systemansvarig
+            id: d-sys
+            domain: example.com
+            members:
+              - turetek
+            permissions:
+              - id: admin
