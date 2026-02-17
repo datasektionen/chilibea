@@ -6,3 +6,39 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.fridge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffa500;
+    text-align: center;
+}
+
+.fridgeTypes {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.fridgeItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fridgeItem div {
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.fridgeItem span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+}

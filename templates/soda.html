@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="se">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/static/style.css" />
+        <title>Läskkyl - METAdorerna</title>
+        <meta
+            name="description"
+            content="Konglig Datasektionen - METAdorerna"
+        />
+        <link rel="icon" href="/static/logo.png" />
+    </head>
+    <body>
+        <header>
+            <div>
+                <img
+                    alt="Logo"
+                    width="255.8"
+                    height="250"
+                    decoding="async"
+                    data-nimg="1"
+                    src="/static/logo.png"
+                    style="color: transparent"
+                />
+            </div>
+            <nav>
+                <a href="/about">Hem</a>
+                <a href="/meta">META</a>
+                <a href="/laskkyl">Läskkyl</a>
+            </nav>
+        </header>
+        <main>
+            <div class="fridge">
+                <button>
+                    <img
+                        alt="Fullscreen"
+                        width="40"
+                        height="40"
+                        decoding="async"
+                        data-nimg="1"
+                        style="color: transparent"
+                        src="/fullscreen-logo.svg"
+                    />
+                </button>
+                <div>
+                    <img
+                        alt="Fippel"
+                        width="800"
+                        height="400"
+                        decoding="async"
+                        data-nimg="1"
+                        style="color: transparent"
+                        src="/static/laskkyl.gif"
+                    />
+                </div>
+                <div class="fridgeTypes">
+                    <div class="fridgeItem">
+                        <img
+                            alt="Fippel"
+                            width="350"
+                            height="175"
+                            decoding="async"
+                            data-nimg="1"
+                            style="color: transparent"
+                            src="/static/dryck.gif"
+                        />
+                        {{ range .Sodas }}
+                        <div>
+                            <p>{{ .Name }}</p>
+                            <p>{{ .Price }} kr</p>
+                        </div>
+                        {{ end }}
+                    </div>
+                    <div class="fridgeItem">
+                        <img
+                            alt="Fippel"
+                            width="350"
+                            height="175"
+                            decoding="async"
+                            data-nimg="1"
+                            style="color: transparent"
+                            src="/static/snacks.gif"
+                        />
+                        {{ range .Snacks }}
+                        <div>
+                            <p>{{ .Name }}</p>
+                            <p>{{ .Price }} kr</p>
+                        </div>
+                        {{ end }}
+                    </div>
+                </div>
+                <div>
+                    <h1>!!!! MINSTA KÖP 10 KR !!!!</h1>
+                    <p style="font-size: 1.5rem; text-align: center">
+                        Annars dödar swishavgifterna oss :,(<br />...och
+                        METAdorerna dig!<br /><br />Om du har önskemål eller
+                        frågor kontakta oss på<!-- -->
+                        <a href="mailto:laskkyl@metadorerna.se"
+                            >laskkyl@metadorerna.se</a
+                        >
+                    </p>
+                </div>
+            </div>
+            <footer>
+                <img
+                    alt="METAdorerna"
+                    width="100"
+                    height="100"
+                    decoding="async"
+                    data-nimg="1"
+                    style="color: transparent"
+                    src="/static/logo.png"
+                /><img
+                    alt="See you!"
+                    width="306"
+                    height="84"
+                    decoding="async"
+                    data-nimg="1"
+                    style="color: transparent"
+                    src="/static/see_you_trans.png"
+                />
+            </footer>
+        </main>
+    </body>
+</html>

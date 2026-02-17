@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"embed"
 	"fmt"
 	"html/template"
 	"log/slog"
@@ -17,17 +16,11 @@ import (
 
 type Service struct {
 	db           *pgxpool.Pool
-	oauth2Config *oauth2.Config
+	oauth2Config oauth2.Config
 	verifier     *oidc.IDTokenVerifier
 	ctx          context.Context
 	t            *template.Template
 }
-
-//go:embed templates/*
-var templatesFS embed.FS
-
-//go:embed static/*
-var staticFS embed.FS
 
 func main() {
 	port, err := strconv.Atoi(os.Getenv("PORT"))
@@ -41,13 +34,14 @@ func main() {
 	}
 	db, err := pgxpool.New(context.Background(), dbURL)
 	if _, err := db.Exec(context.Background(), `
-	CREATE TABLE IF NOT EXISTS sodaFridge (id SERIAL PRIMARY KEY, name TEXT NOT NULL, price FLOAT NOT NULL);
-	CREATE TABLE IF NOT EXISTS cleanPoints (id SERIAL PRIMARY KEY, kthid VARCHAR(10) NOT NULL, date TIMESTAMP NOT NULL);
+		CREATE TYPE fridgeType AS ENUM ('soda', 'snack');
+		CREATE TABLE IF NOT EXISTS sodaFridge (name TEXT PRIMARY KEY, type fridgeType NOT NULL, price FLOAT NOT NULL);
+		CREATE TABLE IF NOT EXISTS cleanPoints (id SERIAL PRIMARY KEY, kthid VARCHAR(10) NOT NULL, date TIMESTAMP NOT NULL);
 		`); err != nil {
 		slog.Error("Failed to create tables:", err)
 	}
 
-	tmpl, err := template.ParseFS(templatesFS, "**/*.html")
+	tmpl, err := template.ParseGlob("**/*.html")
 	if err != nil {
 		slog.Error("Failed to parse templates:", err)
 	}
@@ -57,7 +51,7 @@ func main() {
 
 	s := Service{
 		db:           db,
-		oauth2Config: &oauth2Config,
+		oauth2Config: oauth2Config,
 		verifier:     verifier,
 		ctx:          ctx,
 		t:            tmpl,
@@ -66,9 +60,15 @@ func main() {
 	// Set up HTTP server
 	http.HandleFunc("GET /", s.redirectToAbout)
 	http.HandleFunc("GET /about", s.aboutPage)
-	// http.HandleFunc("GET /admin", s.adminPage)
+	http.HandleFunc("GET /laskkyl", s.sodaPage)
+	http.HandleFunc("GET /admin", s.adminPage)
+	http.HandleFunc("PUT /admin/fridge/{t}/add", s.addFridgeItem)
+	http.HandleFunc("POST /admin/fridge/{n}/edit", s.editFridgeItem)
+	http.HandleFunc("GET /admin/fridge/{n}/cancel", s.cancelFridgeEdit)
+	http.HandleFunc("DELETE /admin/fridge/{n}/remove", s.removeFridgeItem)
+	http.HandleFunc("POST /admin/fridge/{n}/save", s.saveFridgeItemEdit)
 	// http.HandleFunc("GET /api/", s.api)
-	http.Handle("GET /static/", http.FileServerFS(staticFS))
+	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("GET /oidc/callback", s.HandleOAuth2)
 
 	address := fmt.Sprintf(":%d", port)

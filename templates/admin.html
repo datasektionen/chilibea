@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="se">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/static/style.css" />
+        <script src="/static/htmx.min.js" defer></script>
+        <title>Admin - METAdorerna</title>
+        <meta
+            name="description"
+            content="Konglig Datasektionen - METAdorerna"
+        />
+        <link rel="icon" href="/static/logo.png" />
+    </head>
+    <body>
+        <header>
+            <div>
+                <img
+                    alt="Logo"
+                    width="255.8"
+                    height="250"
+                    decoding="async"
+                    data-nimg="1"
+                    style="color: transparent"
+                />
+            </div>
+            <nav>
+                <a href="/about">Hem</a>
+                <a href="/meta">META</a>
+                <a href="/laskkyl">Läskkyl</a>
+            </nav>
+        </header>
+        <main>
+            <div>
+                <h1>Admin</h1>
+                <h2>Hej, {{ .User }}!</h2>
+                <p>Här kan du ändra inställningar för METAdorerna.</p>
+            </div>
+            {{ if .FridgePerm }}
+            <div>
+                <h3>Läskkyl</h3>
+                <p>Här kan du ändra inställningar för läskkylen.</p>
+                <div>
+                    <h3>Dricka</h3>
+                    {{range .FridgeData.Sodas}}
+                    <span>
+                        <p>{{.Name}}</p>
+                        <p>{{.Price}} kr</p>
+                        <button
+                            hx-post="/admin/fridge/{{.Name}}/edit"
+                            hx-swap="outerHTML"
+                            hx-target="closest span"
+                        >
+                            edit
+                        </button>
+                        <button
+                            hx-delete="/admin/fridge/{{.Name}}/remove"
+                            hx-swap="outerHTML"
+                            hx-target="closest span"
+                        >
+                            -
+                        </button>
+                    </span>
+                    {{end}}
+                    <form hx-put="/admin/fridge/soda/add" hx-swap="beforebegin">
+                        <input type="text" placeholder="Namn" name="name" />
+                        <input type="number" placeholder="Pris" name="price" />
+                        <button>Lägg till</button>
+                    </form>
+                </div>
+                <div>
+                    <h3>Snacks</h3>
+                    {{range .FridgeData.Snacks}}
+                    <span>
+                        <p>{{.Name}}</p>
+                        <p>{{.Price}} kr</p>
+                        <button
+                            hx-post="/admin/fridge/{{.Name}}/edit"
+                            hx-swap="outerHTML"
+                            hx-target="closest span"
+                        >
+                            edit
+                        </button>
+                        <button
+                            hx-post="/admin/fridge/{{.Name}}/remove"
+                            hx-swap="outerHTML"
+                            hx-target="closest span"
+                        >
+                            -
+                        </button>
+                    </span>
+                    {{end}}
+                    <form
+                        hx-post="/admin/fridge/snack/add"
+                        hx-swap="beforebegin"
+                    >
+                        <input type="text" placeholder="Namn" name="name" />
+                        <input type="number" placeholder="Pris" name="price" />
+                        <button>Lägg till</button>
+                    </form>
+                </div>
+            </div>
+            {{ end }} {{ if .CleanPerm }}
+            <div>
+                <h3>Städning</h3>
+                <p>Här kan du ändra inställningar för städning.</p>
+            </div>
+            {{ end }}
+            <footer>
+                <img
+                    alt="METAdorerna"
+                    width="100"
+                    height="100"
+                    decoding="async"
+                    data-nimg="1"
+                    style="color: transparent"
+                    src="/static/logo.png"
+                /><img
+                    alt="See you!"
+                    width="306"
+                    height="84"
+                    decoding="async"
+                    data-nimg="1"
+                    style="color: transparent"
+                    src="/static/see_you_trans.png"
+                />
+            </footer>
+        </main>
+    </body>
+</html>

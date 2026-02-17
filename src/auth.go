@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"slices"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -64,22 +65,40 @@ func SetCallbackCookie(w http.ResponseWriter, r *http.Request, name, value strin
 	http.SetCookie(w, c)
 }
 
-func Auth(w http.ResponseWriter, r *http.Request, oauth2Config oauth2.Config) (string, bool, error) {
+func HasPermission(p []Permission, id string) bool {
+	for _, perm := range p {
+		if perm.Id == id {
+			return true
+		}
+	}
+	return false
+}
+
+func HasAnyPermission(p []Permission, scopes []string) bool {
+	for _, perm := range p {
+		if slices.Contains(scopes, perm.Id) {
+			return true
+		}
+	}
+	return false
+}
+
+func Auth(w http.ResponseWriter, r *http.Request, oauth2Config oauth2.Config) (string, []Permission, error) {
 	cookie, err := r.Cookie("session")
 
 	if err != nil || cookie.Value == "" {
 		state, err := RandString(16)
 		if err != nil {
 			http.Error(w, "Internal error", http.StatusInternalServerError)
-			return "", false, err
+			return "", nil, err
 		}
 		SetCallbackCookie(w, r, "state", state)
 
 		http.Redirect(w, r, oauth2Config.AuthCodeURL(state), http.StatusFound)
-		return "", false, err
+		return "", nil, err
 	}
 
-	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("there's an error with the signing method")
 		}
@@ -88,15 +107,31 @@ func Auth(w http.ResponseWriter, r *http.Request, oauth2Config oauth2.Config) (s
 
 	if err != nil {
 		http.Error(w, "jwt parse error", http.StatusBadRequest)
-		return "", false, err
+		return "", nil, err
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
 
 	sub := claims["sub"].(string)
-	auth := claims["auth"].(bool)
+	authIface, ok := claims["auth"].([]any)
+	if !ok {
+		http.Error(w, "invalid auth claims", http.StatusBadRequest)
+		return "", nil, fmt.Errorf("invalid auth claims")
+	}
+	auth := make([]Permission, len(authIface))
+	for i, v := range authIface {
+		m, ok := v.(map[string]any)
+		if !ok {
+			http.Error(w, "invalid permission format", http.StatusBadRequest)
+			return "", nil, fmt.Errorf("invalid permission format")
+		}
+		id, _ := m["Id"].(string)
+		scope, _ := m["Scope"].(string)
+		auth[i] = Permission{Id: id, Scope: scope}
+	}
 
 	return sub, auth, nil
+
 }
 
 func (s *Service) HandleOAuth2(w http.ResponseWriter, r *http.Request) {
@@ -140,20 +175,12 @@ func (s *Service) HandleOAuth2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	permission := false
-
-	for _, perm := range claims.Permissions {
-		if perm.Id == "admin" {
-			permission = true
-		}
-	}
-
 	key := []byte(os.Getenv("APP_SECRET_KEY"))
 	token := jwt.New(jwt.SigningMethodHS256)
 	tokenClaims := token.Claims.(jwt.MapClaims)
 	tokenClaims["iss"] = "darkmode"
 	tokenClaims["sub"] = idToken.Subject
-	tokenClaims["auth"] = permission
+	tokenClaims["auth"] = claims.Permissions
 
 	signedToken, err := token.SignedString(key)
 
@@ -162,7 +189,7 @@ func (s *Service) HandleOAuth2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("Loging in user", "user", idToken.Subject, "admin", permission)
+	slog.Info("Loging in user", "user", idToken.Subject, "admin", claims.Permissions)
 
 	cookie := http.Cookie{
 		Name:     "session",

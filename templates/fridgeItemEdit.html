@@ -1,0 +1,12 @@
+<form hx-post="/admin/fridge/{{.Name}}/save" hx-swap="outerHTML">
+    <input type="text" name="name" value="{{.Name}}" />
+    <input type="number" name="price" value="{{.Price}}" />
+    <button type="submit">spara</button>
+    <button
+        hx-get="/admin/fridge/{{.Name}}/cancel"
+        hx-sawp="outerHTML"
+        hx-target="closest form"
+    >
+        avbryt
+    </button>
+</form>

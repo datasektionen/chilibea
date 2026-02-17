@@ -1,0 +1,18 @@
+<span>
+    <p>{{.Name}}</p>
+    <p>{{.Price}} kr</p>
+    <button
+        hx-post="/admin/fridge/{{.Name}}/edit"
+        hx-swap="outerHTML"
+        hx-target="closest span"
+    >
+        edit
+    </button>
+    <button
+        hx-delete="/admin/fridge/{{.Name}}/remove"
+        hx-swap="delete"
+        hx-target="closest span"
+    >
+        -
+    </button>
+</span>
