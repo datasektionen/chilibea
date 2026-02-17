@@ -19,7 +19,13 @@ services:
         condition: service_healthy
     develop:
       watch:
-        - path: .
+        - path: ./static
+          target: /app/static
+          action: sync
+        - path: ./templates
+          target: /app/templates
+          action: sync
+        - path: ./src
           action: rebuild
   db:
     image: "postgres:latest"
@@ -33,10 +39,9 @@ services:
       test:
         - "CMD-SHELL"
         - "sh -c 'pg_isready -d bea -U bea'"
-      interval: 1s
-      timeout: 5s
-      retries: 5
-      start_period: 5s
+      interval: 2s
+      timeout: 3s
+      retries: 8
 
   nyckeln:
     image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
