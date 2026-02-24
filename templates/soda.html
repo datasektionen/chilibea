@@ -4,6 +4,8 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="/static/style.css" />
+        <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
+        <script src="/static/script.js" defer></script>
         <title>Läskkyl - METAdorerna</title>
         <meta
             name="description"
@@ -11,116 +13,121 @@
         />
         <link rel="icon" href="/static/logo.png" />
     </head>
-    <body>
-        <header>
-            <div>
-                <img
-                    alt="Logo"
-                    width="255.8"
-                    height="250"
-                    decoding="async"
-                    data-nimg="1"
-                    src="/static/logo.png"
-                    style="color: transparent"
-                />
-            </div>
-            <nav>
-                <a href="/about">Hem</a>
-                <a href="/meta">META</a>
-                <a href="/laskkyl">Läskkyl</a>
-            </nav>
-        </header>
-        <main>
-            <div class="fridge">
-                <button>
+    <body class="container-flex">
+        <div class="container fullscreenHide">
+            <header>
+                <nav>
+                    <ul>
+                        <li>
+                            <img
+                                alt="Logo"
+                                width="84.4"
+                                height="82.5"
+                                style="color: transparent"
+                                src="/static/logo.png"
+                            />
+                        </li>
+                        <li><strong>METAdorerna</strong></li>
+                    </ul>
+                    <ul>
+                        <li><a href="/about">Hem</a></li>
+                        <li><a href="/meta">META</a></li>
+                        <li><a href="/laskkyl">Läskkyl</a></li>
+                        <li><a href="/admin">Admin</a></li>
+                    </ul>
+                </nav>
+            </header>
+        </div>
+        <main class="main">
+            <div class="mainDiv">
+                <button class="fullscreenButton" onclick="toggleFullscreen()">
                     <img
+                        src="/static/fullscreen-logo.svg"
                         alt="Fullscreen"
                         width="40"
                         height="40"
-                        decoding="async"
-                        data-nimg="1"
-                        style="color: transparent"
-                        src="/fullscreen-logo.svg"
                     />
                 </button>
-                <div>
+                <div class="header">
                     <img
-                        alt="Fippel"
+                        src="/static/laskkyl.gif"
                         width="800"
                         height="400"
-                        decoding="async"
-                        data-nimg="1"
-                        style="color: transparent"
-                        src="/static/laskkyl.gif"
+                        style="pointer-events: none"
                     />
                 </div>
-                <div class="fridgeTypes">
-                    <div class="fridgeItem">
-                        <img
-                            alt="Fippel"
-                            width="350"
-                            height="175"
-                            decoding="async"
-                            data-nimg="1"
-                            style="color: transparent"
-                            src="/static/dryck.gif"
-                        />
-                        {{ range .Sodas }}
-                        <div>
-                            <p>{{ .Name }}</p>
-                            <p>{{ .Price }} kr</p>
+                <div class="productsDiv">
+                    <div class="typesDiv">
+                        <img src="/static/dryck.gif" width="350" height="175" />
+                        {{range .Sodas}}
+                        <div class="product">
+                            <p>{{.Name}}</p>
+                            <div class="dots"></div>
+                            <p>{{.Price}} kr</p>
                         </div>
-                        {{ end }}
+                        {{end}}
                     </div>
-                    <div class="fridgeItem">
+                    <div class="typesDiv">
                         <img
-                            alt="Fippel"
+                            src="/static/snacks.gif"
                             width="350"
                             height="175"
-                            decoding="async"
-                            data-nimg="1"
-                            style="color: transparent"
-                            src="/static/snacks.gif"
                         />
-                        {{ range .Snacks }}
-                        <div>
-                            <p>{{ .Name }}</p>
-                            <p>{{ .Price }} kr</p>
+                        {{range .Snacks}}
+                        <div class="product">
+                            <p>{{.Name}}</p>
+                            <div class="dots"></div>
+                            <p>{{.Price}} kr</p>
                         </div>
-                        {{ end }}
+                        {{end}}
                     </div>
                 </div>
-                <div>
-                    <h1>!!!! MINSTA KÖP 10 KR !!!!</h1>
-                    <p style="font-size: 1.5rem; text-align: center">
-                        Annars dödar swishavgifterna oss :,(<br />...och
-                        METAdorerna dig!<br /><br />Om du har önskemål eller
-                        frågor kontakta oss på<!-- -->
-                        <a href="mailto:laskkyl@metadorerna.se"
-                            >laskkyl@metadorerna.se</a
-                        >
+                <div class="minstaKopDiv">
+                    <h2 class="minstaKop">!!!! MINSTA KÖP 10 KR !!!!</h2>
+                    <p>
+                        Annars dödar swishavgifterna oss :,(
+                        <br />
+                        ...och METAdorerna dig!
+                        <br />
+                        <br />
+                        Om du har önskemål eller frågor kontakta oss på
+                        <a href="mailto:laskkyl@metadorerna.se">
+                            laskkyl@metadorerna.se
+                        </a>
                     </p>
                 </div>
             </div>
-            <footer>
-                <img
-                    alt="METAdorerna"
-                    width="100"
-                    height="100"
-                    decoding="async"
-                    data-nimg="1"
-                    style="color: transparent"
-                    src="/static/logo.png"
-                /><img
-                    alt="See you!"
-                    width="306"
-                    height="84"
-                    decoding="async"
-                    data-nimg="1"
-                    style="color: transparent"
-                    src="/static/see_you_trans.png"
-                />
-            </footer>
         </main>
+        <div class="container fullscreenHide">
+            <footer>
+                <nav>
+                    <ul>
+                        <li>
+                            <img
+                                alt="Logo"
+                                width="84.4"
+                                height="82.5"
+                                style="color: transparent"
+                                src="/static/logo.png"
+                            />
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            <img
+                                alt="See you!"
+                                width="306"
+                                height="84"
+                                decoding="async"
+                                data-nimg="1"
+                                style="color: transparent"
+                                class="seeYou"
+                                src="/static/see_you_trans.png"
+                            />
+                        </li>
+                    </ul>
+                </nav>
+            </footer>
+        </div>
     </body>
 </html>

@@ -1,0 +1,23 @@
+<div hx-swap-oob="innerHTML:#ModalContent">
+    <header>
+        <h3>Är du säker på att du vill ta bort {{.Name}}?</h3>
+    </header>
+    <form
+        hx-delete="/admin/fridge/{{.Name}}/remove"
+        hx-swap="delete"
+        hx-on::before-request="Modal('Modal')"
+    >
+        <fieldset role="group">
+            <button
+                type="button"
+                hx-get="/admin/fridge/{{.Name}}/cancel"
+                hx-swap="delete"
+                hx-target="closest form"
+                class="secondary"
+            >
+                Avbryt
+            </button>
+            <input type="submit" value="Ta bort" />
+        </fieldset>
+    </form>
+</div>

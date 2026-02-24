@@ -13,6 +13,36 @@ type adminData struct {
 	CleanPerm  bool
 }
 
+func FridgePerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
+	user, perms, err := Auth(w, r, s.oauth2Config)
+	if err != nil {
+		slog.Error("Authentication error:", err)
+		http.Error(w, "Authentication error", http.StatusInternalServerError)
+		return false
+	}
+	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
+		slog.Warn("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
+		http.Redirect(w, r, "/about", http.StatusSeeOther)
+		return false
+	}
+	return true
+}
+
+func CleanPerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
+	user, perms, err := Auth(w, r, s.oauth2Config)
+	if err != nil {
+		slog.Error("Authentication error:", err)
+		http.Error(w, "Authentication error", http.StatusInternalServerError)
+		return false
+	}
+	if !(HasPermission(perms, "clean") || HasPermission(perms, "admin")) {
+		slog.Warn("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
+		http.Redirect(w, r, "/about", http.StatusSeeOther)
+		return false
+	}
+	return true
+}
+
 func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 	user, perms, err := Auth(w, r, s.oauth2Config)
 	if err != nil {
@@ -65,15 +95,7 @@ func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
-	user, perms, err := Auth(w, r, s.oauth2Config)
-	if err != nil {
-		slog.Error("Authentication error:", err)
-		http.Error(w, "Authentication error", http.StatusInternalServerError)
-		return
-	}
-	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
-		slog.Warn("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
-		http.Redirect(w, r, "/about", http.StatusSeeOther)
+	if !FridgePerms(w, r, s) {
 		return
 	}
 
@@ -86,7 +108,6 @@ func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
 	name := r.FormValue("name")
 	t := r.PathValue("t")
 	if t != "soda" && t != "snack" {
-		slog.Warn("Invalid fridge type in add item request", "user", user, "permissions", perms, "type", t)
 		http.Error(w, "Invalid fridge type", http.StatusBadRequest)
 		return
 	}
@@ -113,26 +134,19 @@ func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
 		price,
 	}
 
-	if err := s.t.ExecuteTemplate(w, "fridgeItem.html", data); err != nil {
+	slog.Info("Add fridge item requested", "item", name, "type", t, "price", price)
+
+	if err := s.t.ExecuteTemplate(w, "fridgeItemRow.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
 	}
 }
 
 func (s *Service) editFridgeItem(w http.ResponseWriter, r *http.Request) {
-	user, perms, err := Auth(w, r, s.oauth2Config)
-	if err != nil {
-		slog.Error("Authentication error:", err)
-		http.Error(w, "Authentication error", http.StatusInternalServerError)
-		return
-	}
-	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
-		slog.Warn("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
-		http.Redirect(w, r, "/about", http.StatusSeeOther)
+	if !FridgePerms(w, r, s) {
 		return
 	}
 
 	name := r.PathValue("n")
-	slog.Info("Edit fridge item requested", "user", user, "permissions", perms, "item", name)
 	item, err := getFridgeItem(s.db, s.ctx, name)
 	if err != nil {
 		slog.Error("Failed to get fridge item:", err)
@@ -143,26 +157,20 @@ func (s *Service) editFridgeItem(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Name  string
 		Price float32
+		Ftype string
 	}{
 		Name:  item.Name,
 		Price: item.Price,
+		Ftype: item.Type,
 	}
 
-	if err := s.t.ExecuteTemplate(w, "fridgeItemEdit.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "editForm.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
 	}
 }
 
 func (s *Service) cancelFridgeEdit(w http.ResponseWriter, r *http.Request) {
-	user, perms, err := Auth(w, r, s.oauth2Config)
-	if err != nil {
-		slog.Error("Authentication error:", err)
-		http.Error(w, "Authentication error", http.StatusInternalServerError)
-		return
-	}
-	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
-		slog.Info("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
-		http.Redirect(w, r, "/about", http.StatusSeeOther)
+	if !FridgePerms(w, r, s) {
 		return
 	}
 
@@ -174,32 +182,24 @@ func (s *Service) cancelFridgeEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	slog.Info("Cancel edit fridge item requested", "user", user, "permissions", perms, "item", name)
-
 	data := struct {
 		Name  string
 		Price float32
+		Ftype string
 	}{
 		Name:  item.Name,
 		Price: item.Price,
+		Ftype: item.Type,
 	}
 
-	if err := s.t.ExecuteTemplate(w, "fridgeItem.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "cancelForm.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
 	}
 
 }
 
 func (s *Service) saveFridgeItemEdit(w http.ResponseWriter, r *http.Request) {
-	user, perms, err := Auth(w, r, s.oauth2Config)
-	if err != nil {
-		slog.Error("Authentication error:", err)
-		http.Error(w, "Authentication error", http.StatusInternalServerError)
-		return
-	}
-	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
-		slog.Info("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
-		http.Redirect(w, r, "/about", http.StatusSeeOther)
+	if !FridgePerms(w, r, s) {
 		return
 	}
 
@@ -219,6 +219,13 @@ func (s *Service) saveFridgeItemEdit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	item, err := getFridgeItem(s.db, s.ctx, oldName)
+	if err != nil {
+		slog.Error("Failed to get fridge item:", err)
+		http.Error(w, "Failed to get fridge item", http.StatusBadRequest)
+		return
+	}
+
 	if err := updateFridgeItem(s.db, s.ctx, oldName, name, float32(price)); err != nil {
 		slog.Error("Failed to update fridge item:", err)
 		http.Error(w, "Failed to update fridge item", http.StatusInternalServerError)
@@ -228,26 +235,39 @@ func (s *Service) saveFridgeItemEdit(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Name  string
 		Price float32
+		Ftype string
 	}{
 		Name:  name,
 		Price: float32(price),
+		Ftype: item.Type,
 	}
 
-	if err := s.t.ExecuteTemplate(w, "fridgeItem.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "saveItem.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
 	}
 }
 
-func (s *Service) removeFridgeItem(w http.ResponseWriter, r *http.Request) {
-	user, perms, err := Auth(w, r, s.oauth2Config)
-	if err != nil {
-		slog.Error("Authentication error:", err)
-		http.Error(w, "Authentication error", http.StatusInternalServerError)
+func (s *Service) confirmDeleteFridgeItem(w http.ResponseWriter, r *http.Request) {
+	if !FridgePerms(w, r, s) {
 		return
 	}
-	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
-		slog.Info("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
-		http.Redirect(w, r, "/about", http.StatusSeeOther)
+
+	name := r.PathValue("n")
+
+	data := struct {
+		Name string
+	}{
+		Name: name,
+	}
+
+	if err := s.t.ExecuteTemplate(w, "confirmDelete.html", data); err != nil {
+		slog.Error("Failed to execute template:", err)
+	}
+
+}
+
+func (s *Service) removeFridgeItem(w http.ResponseWriter, r *http.Request) {
+	if !FridgePerms(w, r, s) {
 		return
 	}
 

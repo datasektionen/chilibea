@@ -1,0 +1,43 @@
+<div hx-swap-oob="innerHTML:#ModalContent">
+    <header>
+        <h3>Ändra {{.Name}}</h3>
+    </header>
+    <form
+        hx-post="/admin/fridge/{{.Name}}/save"
+        hx-swap="delete"
+        hx-on::before-request="Modal('Modal')"
+    >
+        <fieldset role="group">
+            <label>
+                Namn
+                <input
+                    type="text"
+                    placeholder="Namn"
+                    name="name"
+                    value="{{.Name}}"
+                />
+            </label>
+            <label>
+                Pris
+                <input
+                    type="number"
+                    placeholder="Pris"
+                    name="price"
+                    value="{{.Price}}"
+                />
+            </label>
+        </fieldset>
+        <fieldset role="group">
+            <button
+                type="button"
+                hx-get="/admin/fridge/{{.Name}}/cancel"
+                hx-swap="delete"
+                hx-target="closest form"
+                class="secondary"
+            >
+                Avbryt
+            </button>
+            <input type="submit" value="Spara" />
+        </fieldset>
+    </form>
+</div>

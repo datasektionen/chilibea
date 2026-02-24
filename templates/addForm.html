@@ -1,0 +1,14 @@
+{{define "addForm"}}
+<form
+    id="{{.}}-form"
+    hx-put="/admin/fridge/{{.}}/add"
+    hx-swap="beforeend"
+    hx-target="#{{.}}-table"
+>
+    <fieldset role="group">
+        <input type="text" placeholder="Namn" name="name" />
+        <input type="number" placeholder="Pris" name="price" />
+        <input type="submit" value="Lägg till" />
+    </fieldset>
+</form>
+{{end}}

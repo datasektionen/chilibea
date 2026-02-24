@@ -66,6 +66,7 @@ func main() {
 	http.HandleFunc("POST /admin/fridge/{n}/edit", s.editFridgeItem)
 	http.HandleFunc("GET /admin/fridge/{n}/cancel", s.cancelFridgeEdit)
 	http.HandleFunc("DELETE /admin/fridge/{n}/remove", s.removeFridgeItem)
+	http.HandleFunc("POST /admin/fridge/{n}/remove", s.confirmDeleteFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/save", s.saveFridgeItemEdit)
 	// http.HandleFunc("GET /api/", s.api)
 	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))

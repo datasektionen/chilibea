@@ -1,44 +1,191 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
+:root {
+    --background: #212121;
+    --orange-background: orange;
+    --text-on-background: #ededed;
+    --primary-text: #000;
+    --cerise: #ee2a7b;
+}
+
 body {
     font-family: "Lato", sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
 }
 
-.fridge {
+.size-6 {
+    width: 24px;
+    height: 24px;
+    margin: auto;
+}
+
+.size-8 {
+    width: 32px;
+    height: 32px;
+    margin: auto;
+}
+
+.center {
+    display: flex;
+    display: flex;
+    justify-content: center;
+}
+
+.main {
+    height: 100vh;
+    background-color: var(--orange-background);
+}
+
+.main * {
+    color: var(--primary-text);
+}
+
+.mainDiv {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: var(--orange-background);
+    max-height: calc(100vh - 140px);
+}
+
+.header {
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-height: 140px;
+}
+
+.fullscreenButton {
+    position: absolute;
+    z-index: 10;
+    top: 10px;
+    right: 10px;
+    background-color: var(--orange-background);
+    border: none;
+    cursor: pointer;
+}
+
+.productsDiv {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 0 30px;
+    margin-bottom: 2rem;
+
+    column-gap: 30px;
+    row-gap: 40px;
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.typesDiv {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: #ffa500;
+    row-gap: 8px;
+}
+
+.typesDiv:nth-last-child(1):nth-child(odd) {
+    grid-column: span 2;
+}
+
+.typesDiv > h1 {
     text-align: center;
-}
-
-.fridgeTypes {
-    display: flex;
-    justify-content: space-around;
     width: 100%;
+    line-height: 1.8rem;
 }
 
-.fridgeItem {
+.typesDiv > img {
+    align-self: center;
+}
+
+.product {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: space-between;
+    align-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
-.fridgeItem div {
-    font-size: 1.5rem;
+.dots {
+    overflow: hidden;
+    width: 100%;
+    border-bottom: 2px dotted var(--primary-text);
+    margin: 0 2px 5px 2px;
+}
+
+.product p {
+    font-size: 2.5vh;
+    line-height: 3vh;
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+.minstaKopDiv {
+    display: flex;
+    gap: 0.7rem;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.minstaKopDiv p {
+    text-align: center;
+    font-size: 1rem;
+}
+
+.minstaKopDiv a {
+    color: mediumblue;
+    text-decoration: none;
     font-weight: bold;
+}
+
+*:fullscreen .fullscreenHide {
+    display: none;
+}
+
+@keyframes swing {
+    0% {
+        transform: scale(1) rotate(-10deg);
+    }
+    50% {
+        transform: scale(1.075) rotate(10deg);
+    }
+    100% {
+        transform: scale(1) rotate(-10deg);
+    }
+}
+
+.minstaKop {
+    color: var(--cerise);
+    font-size: 2rem;
+    animation: swing 2.3s cubic-bezier(0.85, 0, 0.15, 1) infinite;
+}
+
+.footer {
+    height: 140px;
+    bottom: 0;
+    width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    width: 100%;
+    background-color: rgb(0, 0, 0, 0.5);
+    border-radius: 0 0 10px 10px;
+    padding: 10px 0;
 }
+.seeYou {
+    filter: invert(0);
 
-.fridgeItem span {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 10px;
+    @media (prefers-color-scheme: dark) {
+        filter: invert(1);
+    }
 }
