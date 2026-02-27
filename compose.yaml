@@ -10,6 +10,9 @@ services:
       - OIDC_CLIENT_SECRET=client-secret
       - OIDC_REDIRECT_URL=http://localhost:2000/oidc/callback
       - DATABASE_URL=postgres://bea:bea@db:5432/bea
+      - SSO_URL=http://nyckeln:7003
+      - HIVE_URL=http://nyckeln:7004
+      - HIVE_TOCKEN=testt
     ports: [2000:2000]
     configs:
       - source: nginx.conf
@@ -47,6 +50,7 @@ services:
     image: ghcr.io/datasektionen/nyckeln-under-dorrmattan
     ports:
       - 7003:7003
+      - 7004:7004
     configs:
       - source: nyckeln.yaml
         target: /config.yaml
@@ -81,19 +85,39 @@ configs:
           first_name: Ture
           family_name: Teknolog
           year_tag: D-83
+          picture: https://thskth.se/wp-content/uploads/2023/06/ths-logo-bla-01-300x294-1.png
+          thumbnail: https://thskth.se/wp-content/uploads/2019/12/ths-logo-svart-01.png
         - ug_kth_id: some-other-id
           kth_id: diadat
           email: diadat@kth.se
           first_name: Diana
           family_name: Datalog
           year_tag: D-83
+          picture: https://thskth.se/wp-content/uploads/2023/06/ths-logo-bla-01-300x294-1.png
+          thumbnail: https://thskth.se/wp-content/uploads/2019/12/ths-logo-svart-01.png
 
       hive:
+        keys:
+          - id: admin
+            permissions:
+              - id: admin
         groups:
           - name: Systemansvarig
             id: d-sys
             domain: example.com
             members:
+              - turetek
+            tags:
+              - id: internal
+            permissions:
+              - id: admin
+          - name: matrix
+            id: matrix
+            domain: example.com
+            tags:
+              - id: internal
+            members:
+              - diadat
               - turetek
             permissions:
               - id: admin
