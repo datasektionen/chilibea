@@ -37,7 +37,7 @@ PORT={{ env "NOMAD_PORT_http" }}
 OIDC_PROVIDER=https://sso.datasektionen.se/op
 SSO_URL=https://sso.datasektionen.se
 OIDC_ID=bea
-OIDC_REDIRECT_URL=https://metadorerna.se/oidc/callback
+OIDC_REDIRECT_URL=https://chili.metadorerna.se/oidc/callback
 HIVE_URL=https://hive.datasektionen.se/api/v1
 ENV
         destination = "local/.env"
