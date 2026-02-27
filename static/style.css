@@ -252,7 +252,8 @@ body {
 .memberSlot img {
     width: 100%;
     max-width: 150px;
-    border-radius: 10rem;
+    object-fit: cover;
+    clip-path: circle(50%);
 }
 
 .groupArticle main {

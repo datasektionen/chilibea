@@ -35,7 +35,7 @@ DATABASE_URL=postgresql://bea:{{ .database_password }}@postgres.dsekt.internal:5
 {{ end }}
 PORT={{ env "NOMAD_PORT_http" }}
 OIDC_PROVIDER=https://sso.datasektionen.se/op
-SSO_URL=https://sso.datasektionen.se
+SSO_URL=http://sso.nomad.dsekt.internal
 OIDC_ID=bea
 OIDC_REDIRECT_URL=https://chili.metadorerna.se/oidc/callback
 HIVE_URL=https://hive.datasektionen.se/api/v1
