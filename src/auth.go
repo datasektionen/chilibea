@@ -41,7 +41,7 @@ func InitOIDC(ctx context.Context) (oauth2.Config, *oidc.IDTokenVerifier) {
 		// "openid" is a required scope for OpenID Connect flows.
 		Scopes: []string{oidc.ScopeOpenID, "permissions"},
 	}
-	var verifier = provider.Verifier(&oidc.Config{ClientID: os.Getenv("OIDC_CLIENT_ID")})
+	var verifier = provider.Verifier(&oidc.Config{ClientID: os.Getenv("OIDC_ID")})
 
 	return oauth2Config, verifier
 }

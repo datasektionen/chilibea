@@ -6,13 +6,13 @@ services:
     environment:
       - PORT=2000
       - OIDC_PROVIDOR=http://localhost:7003
-      - OIDC_CLIENT_ID=client-id
-      - OIDC_CLIENT_SECRET=client-secret
+      - OIDC_ID=client-id
+      - OIDC_SECRET=client-secret
       - OIDC_REDIRECT_URL=http://localhost:2000/oidc/callback
       - DATABASE_URL=postgres://bea:bea@db:5432/bea
       - SSO_URL=http://nyckeln:7003
-      - HIVE_URL=http://nyckeln:7004
-      - HIVE_TOCKEN=testt
+      - HIVE_URL=http://nyckeln:7004/api/v1
+      - HIVE_TOKEN=testt
     ports: [2000:2000]
     configs:
       - source: nginx.conf
