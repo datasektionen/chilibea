@@ -250,10 +250,15 @@ body {
 }
 
 .memberSlot img {
-    width: 100%;
-    max-width: 150px;
+    width: 150px;
+    height: 150px;
     object-fit: cover;
     clip-path: circle(50%);
+}
+
+.memberSlot h4 {
+    text-align: center;
+    max-width: 175px;
 }
 
 .groupArticle main {
