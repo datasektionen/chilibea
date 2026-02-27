@@ -1,23 +1,23 @@
-job "chilibea" {
+job "bea" {
   type = "service"
 
-  group "chilibea" {
+  group "bea" {
     network {
       port "http" { }
     }
 
     service {
-      name     = "chilibea"
+      name     = "bea"
       port     = "http"
       provider = "nomad"
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.chilibea.rule=Host(`chili.metadorerna.se`)",
-        "traefik.http.routers.chilibea.tls.certresolver=default",
+        "traefik.http.routers.bea.rule=Host(`metadorerna.se`)",
+        "traefik.http.routers.bea.tls.certresolver=default",
       ]
     }
 
-    task "chilibea" {
+    task "bea" {
       driver = "docker"
 
       config {
@@ -27,7 +27,7 @@ job "chilibea" {
 
       template {
         data        = <<ENV
-{{ with nomadVar "nomad/jobs/chilibea" }}
+{{ with nomadVar "nomad/jobs/bea" }}
 APP_SECRET={{ .app_secret }}
 OIDC_SECRET={{ .oidc_secret }}
 HIVE_TOKEN={{ .hive_api_key }}
@@ -37,7 +37,7 @@ PORT={{ env "NOMAD_PORT_http" }}
 OIDC_PROVIDER=https://sso.datasektionen.se/op
 SSO_URL=http://sso.nomad.dsekt.internal
 OIDC_ID=bea
-OIDC_REDIRECT_URL=https://chili.metadorerna.se/oidc/callback
+OIDC_REDIRECT_URL=https://metadorerna.se/oidc/callback
 HIVE_URL=https://hive.datasektionen.se/api/v1
 ENV
         destination = "local/.env"
@@ -49,9 +49,4 @@ ENV
       }
     }
   }
-}
-
-variable "image_tag" {
-  type = string
-  default = "ghcr.io/datasektionen/zaiko:latest"
 }
