@@ -46,7 +46,7 @@ func getHiveGroup() ([]Group, error) {
 	for _, g := range groups {
 		members, err := getMembersInGroup(g, client)
 		if err != nil {
-			slog.Error("Failed to get members for group:", "group", g.Name, "error", err)
+			slog.Error("Failed to get members for group:", "group", g, "error", err)
 			continue
 		}
 		result = append(result, Group{
@@ -85,7 +85,7 @@ func getMembersInGroup(group HiveGroup, client *http.Client) ([]Member, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		slog.Error("Unexpected status code:", "status", resp.StatusCode)
+		slog.Error("Unexpected status code:", "status", resp.StatusCode, "url", url)
 		return nil, err
 	}
 
