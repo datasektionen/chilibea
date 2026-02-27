@@ -24,7 +24,7 @@ type Permission struct {
 }
 
 func InitOIDC(ctx context.Context) (oauth2.Config, *oidc.IDTokenVerifier) {
-	provider, err := oidc.NewProvider(ctx, os.Getenv("OIDC_PROVIDOR"))
+	provider, err := oidc.NewProvider(ctx, os.Getenv("OIDC_PROVIDER"))
 	if err != nil {
 		log.Panicln(err.Error())
 	}

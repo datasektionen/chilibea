@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile.dev
     environment:
       - PORT=2000
-      - OIDC_PROVIDOR=http://localhost:7003
+      - OIDC_PROVIDER=http://localhost:7003
       - OIDC_ID=client-id
       - OIDC_SECRET=client-secret
       - OIDC_REDIRECT_URL=http://localhost:2000/oidc/callback
