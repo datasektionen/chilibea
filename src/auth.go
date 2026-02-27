@@ -175,10 +175,10 @@ func (s *Service) HandleOAuth2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	key := []byte(os.Getenv("APP_SECRET_KEY"))
+	key := []byte(os.Getenv("APP_SECRET"))
 	token := jwt.New(jwt.SigningMethodHS256)
 	tokenClaims := token.Claims.(jwt.MapClaims)
-	tokenClaims["iss"] = "darkmode"
+	tokenClaims["iss"] = "bea"
 	tokenClaims["sub"] = idToken.Subject
 	tokenClaims["auth"] = claims.Permissions
 
