@@ -261,6 +261,11 @@ body {
     max-width: 175px;
 }
 
+.memberSlot p {
+    text-align: center;
+    font-size: 0.9rem;
+}
+
 .groupArticle main {
     display: flex;
     flex-wrap: wrap;

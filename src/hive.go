@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type HiveGroup struct {
@@ -50,7 +51,7 @@ func getHiveGroup() ([]Group, error) {
 			continue
 		}
 		result = append(result, Group{
-			Name:    g.Name,
+			Name:    strings.TrimPrefix(g.Name, "METAdorerna "),
 			Desc:    g.Id,
 			Email:   fmt.Sprintf("%s@%s", g.Id, g.Domain),
 			Members: members,
