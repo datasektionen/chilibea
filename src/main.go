@@ -59,6 +59,7 @@ func main() {
 
 	// Set up HTTP server
 	http.HandleFunc("GET /", s.redirectToAbout)
+	http.HandleFunc("GET /meta", s.metaPage)
 	http.HandleFunc("GET /about", s.aboutPage)
 	http.HandleFunc("GET /laskkyl", s.sodaPage)
 	http.HandleFunc("GET /admin", s.adminPage)
@@ -68,7 +69,6 @@ func main() {
 	http.HandleFunc("DELETE /admin/fridge/{n}/remove", s.removeFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/remove", s.confirmDeleteFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/save", s.saveFridgeItemEdit)
-	// http.HandleFunc("GET /api/", s.api)
 	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("GET /oidc/callback", s.HandleOAuth2)
 
@@ -77,9 +77,40 @@ func main() {
 	http.ListenAndServe(address, nil)
 }
 
+type Member struct {
+	Name   string
+	Email  string
+	ImgUrl string
+}
+
+type Group struct {
+	Name    string
+	Desc    string
+	Email   string
+	Members []Member
+}
+
+type IndexData struct {
+	Groups []Group
+}
+
 func (s *Service) aboutPage(w http.ResponseWriter, r *http.Request) {
-	if err := s.t.ExecuteTemplate(w, "index.html", nil); err != nil {
-		slog.Error("Failed to execute template:", err)
+	groups, err := getHiveGroup()
+	if err != nil {
+		slog.Error("Failed to get Hive groups", "error", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	data := IndexData{
+		Groups: groups,
+	}
+
+	w.Header().Set("Cache-Control", "public, max-age=86400")
+
+	// Execute template
+	if err := s.t.ExecuteTemplate(w, "index.html", data); err != nil {
+		slog.Error("Failed to execute template", "error", err)
 	}
 }
 

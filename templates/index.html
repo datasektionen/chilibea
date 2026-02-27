@@ -4,6 +4,8 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="/static/style.css" />
+        <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
+        <script src="/static/script.js" defer></script>
         <title>METAdorerna</title>
         <meta
             name="description"
@@ -11,163 +13,117 @@
         />
         <link rel="icon" href="/static/logo.png" />
     </head>
-    <body>
+    <body class="container">
         <header>
-            <div>
-                <img
-                    alt="Logo"
-                    width="255.8"
-                    height="250"
-                    decoding="async"
-                    data-nimg="1"
-                    style="color: transparent"
-                />
-            </div>
             <nav>
-                <a href="/about">Hem</a>
-                <a href="/meta">META</a>
-                <a href="/laskkyl">Läskkyl</a>
+                <ul>
+                    <li>
+                        <img
+                            alt="Logo"
+                            width="84.4"
+                            height="82.5"
+                            style="color: transparent"
+                            src="/static/logo.png"
+                        />
+                    </li>
+                    <li><strong>METAdorerna</strong></li>
+                </ul>
+                <ul>
+                    <li><a href="/about">Hem</a></li>
+                    <li><a href="/meta">META</a></li>
+                    <li><a href="/laskkyl">Läskkyl</a></li>
+                    <li><a href="/admin">Admin</a></li>
+                </ul>
             </nav>
         </header>
-        <main>
-            <div>
-                <button>
-                    <img
-                        alt="Fullscreen"
-                        width="40"
-                        height="40"
-                        decoding="async"
-                        data-nimg="1"
-                        style="color: transparent"
-                        src="/fullscreen-logo.svg"
-                    />
-                </button>
+        <main class="container">
+            <main class="split" style="margin-bottom: 6rem">
                 <div>
-                    <img
-                        alt="Fippel"
-                        width="800"
-                        height="400"
-                        decoding="async"
-                        data-nimg="1"
-                        style="color: transparent"
-                        src="/static/laskkyl.gif"
-                    />
-                </div>
-                <div>
-                    <div>
-                        <img
-                            alt="Fippel"
-                            width="350"
-                            height="175"
-                            decoding="async"
-                            data-nimg="1"
-                            style="color: transparent"
-                            src="/static/dryck.gif"
-                        />
-                        <div>
-                            <p>BOOM Energy⚡️</p>
-                            <div></div>
-                            <p>8 kr</p>
-                        </div>
-                        <div>
-                            <p>KONG Worms 🪱</p>
-                            <div></div>
-                            <p>10 kr</p>
-                        </div>
-                        <div>
-                            <p>Coca Cola ❄️</p>
-                            <div></div>
-                            <p>8 kr</p>
-                        </div>
-                        <div>
-                            <p>{högtid}must</p>
-                            <div></div>
-                            <p>8 kr</p>
-                        </div>
-                        <div>
-                            <p>Fejkis 😎</p>
-                            <div></div>
-                            <p>6 kr</p>
-                        </div>
-                    </div>
-                    <div>
-                        <img
-                            alt="Fippel"
-                            width="350"
-                            height="175"
-                            decoding="async"
-                            data-nimg="1"
-                            style="color: transparent"
-                            src="/static/snacks.gif"
-                        />
-                        <div>
-                            <p>Pingvinstång 🐧</p>
-                            <div></div>
-                            <p>6 kr</p>
-                        </div>
-                        <div>
-                            <p>Japp 👍</p>
-                            <div></div>
-                            <p>8 kr</p>
-                        </div>
-                        <div>
-                            <p>Lionbar 🦁</p>
-                            <div></div>
-                            <p>8 kr</p>
-                        </div>
-                        <div>
-                            <p>Kit-Kat 😻</p>
-                            <div></div>
-                            <p>8 kr</p>
-                        </div>
-                        <div>
-                            <p>Flapjack 🥞</p>
-                            <div></div>
-                            <p>8 kr</p>
-                        </div>
-                        <div>
-                            <p>Sesamkakor ❌🥜</p>
-                            <div></div>
-                            <p>5 kr</p>
-                        </div>
-                        <div>
-                            <p>Kexchoklad 🙃</p>
-                            <div></div>
-                            <p>4 kr</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <h1>!!!! MINSTA KÖP 10 KR !!!!</h1>
-                    <p style="font-size: 1.5rem; text-align: center">
-                        Annars dödar swishavgifterna oss :,(<br />...och
-                        METAdorerna dig!<br /><br />Om du har önskemål eller
-                        frågor kontakta oss på<!-- -->
-                        <a href="mailto:laskkyl@metadorerna.se"
-                            >laskkyl@metadorerna.se</a
-                        >
+                    <h1 style="font-size: 3rem">METAdorerna</h1>
+                    <small style="max-width: 600px">
+                        METAdorerna är en delad nämnd mellan
+                        <a href="https://datasektionen.se">datasektionen</a>
+                        och sektionen för
+                        <a href="https://medieteknik.com">medieteknik</a>, på
+                        KTH. Vi är de som tar hand om vår fantastiska
+                        sektionslokal META och ser till att den är en trevlig
+                        plats att vistas på. Vi har möten varje fredaglunch som
+                        just du gärna får komma på! För att få info om var mötet
+                        hålls så går du lättast med i METAdorerna genom
+                        formuläret nedan.
+                    </small>
+                    <p>
+                        <strong>Vill du gå med? Fyll i formuläret:</strong>
+                        <a href="https://www.dsekt.se/blimetad">Bli METAdor</a>
                     </p>
                 </div>
-            </div>
-            <footer>
-                <img
-                    alt="METAdorerna"
-                    width="100"
-                    height="100"
-                    decoding="async"
-                    data-nimg="1"
-                    style="color: transparent"
-                    src="/static/logo.png"
-                /><img
-                    alt="See you!"
-                    width="306"
-                    height="84"
-                    decoding="async"
-                    data-nimg="1"
-                    style="color: transparent"
-                    src="/static/see_you_trans.png"
-                />
-            </footer>
+                <div>
+                    <img
+                        src="/static/METAdorerna_scratcy.gif"
+                        alt="Metadorerna logo"
+                    />
+                </div>
+            </main>
+            <article>
+                <header>
+                    <h2>META</h2>
+                </header>
+                <main class="split">
+                    <div>
+                        <p>
+                            Meta är sektionslokalen
+                            <br />
+                            För mer information om META, klicka:
+                            <a href="/meta">Här</a>
+                        </p>
+                    </div>
+                    <div>
+                        <img src="/static/meta.jpg" alt="Meta" />
+                    </div>
+                </main>
+                <footer></footer>
+            </article>
+            <article>
+                <header>
+                    <h2>Intärnfuntionärer</h2>
+                    <small
+                        >Dessa tappra kämpar ser till att meta hålls i tiptop
+                        skick</small
+                    >
+                </header>
+                <main class="split">
+                    {{range .Groups}} {{template "groupArticle" .}} {{end}}
+                </main>
+            </article>
         </main>
+        <footer>
+            <nav>
+                <ul>
+                    <li>
+                        <img
+                            alt="Logo"
+                            width="84.4"
+                            height="82.5"
+                            style="color: transparent"
+                            src="/static/logo.png"
+                        />
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <img
+                            alt="See you!"
+                            width="306"
+                            height="84"
+                            decoding="async"
+                            data-nimg="1"
+                            class="seeYou"
+                            style="color: transparent"
+                            src="/static/see_you_trans.png"
+                        />
+                    </li>
+                </ul>
+            </nav>
+        </footer>
     </body>
 </html>

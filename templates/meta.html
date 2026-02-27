@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="se">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/static/style.css" />
+        <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
+        <script src="/static/htmx.min.js" defer></script>
+        <script src="/static/script.js" defer></script>
+        <meta name="htmx-config" content='{"useTemplateFragments":"true"}' />
+        <title>Meta - METAdorerna</title>
+        <meta
+            name="description"
+            content="Konglig Datasektionen - METAdorerna"
+        />
+        <link rel="icon" href="/static/logo.png" />
+    </head>
+    <body class="container">
+        <header>
+            <nav>
+                <ul>
+                    <li>
+                        <img
+                            alt="Logo"
+                            width="84.4"
+                            height="82.5"
+                            style="color: transparent"
+                            src="/static/logo.png"
+                        />
+                    </li>
+                    <li><strong>METAdorerna</strong></li>
+                </ul>
+                <ul>
+                    <li><a href="/about">Hem</a></li>
+                    <li><a href="/meta">META</a></li>
+                    <li><a href="/laskkyl">Läskkyl</a></li>
+                    <li><a href="/admin">Admin</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main class="container">
+            <article>
+                <header>
+                    <h1>META</h1>
+                    <small>Här hittar du allmän information om META.</small>
+                </header>
+                <h2>Bokning av META</h2>
+                <p>
+                    För att boka META besöker du in på
+                    <a href="https://bokning.datasektionen.se">
+                        bokning.datasektionen.se
+                    </a>
+                    . Bokningar godkänns av lokalchef.
+                </p>
+                <h2>Bordsplacering</h2>
+                <p>
+                    Nedan ser du bordsplaceringen i META. Efter bokning ska
+                    borden ställas tillbaka enligt den.
+                </p>
+                <div class="legendDiv">
+                    <div class="legend">
+                        <h4>Legend</h4>
+                        <form>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Me1')"
+                                />
+                                Me1
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Me2')"
+                                />
+                                Me2
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('D1')"
+                                />
+                                D1
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('D2')"
+                                />
+                                D2
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Ghost')"
+                                />
+                                👻
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Cubb')"
+                                />
+                                Städskrubben
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Mdor')"
+                                />
+                                Metadorskåpet
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Sjuk')"
+                                />
+                                Sjukvårdslådan
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Kit')"
+                                />
+                                Köket
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Meet')"
+                                />
+                                Mötesrummet
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Prop')"
+                                />
+                                Proppskåpet
+                            </label>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="legend"
+                                    onchange="highlight('Soda')"
+                                />
+                                Läskkylen
+                            </label>
+                        </form>
+                    </div>
+                    <div>
+                        <h4>Karta</h4>
+                        <svg width="100%" height="100%" viewBox="0 0 1000 1000">
+                            <path
+                                fill="white"
+                                d="M 375 645 H 344 L 226 484 V 288 H 190 V 255 H 226 V 215 H 278 V 188 H 552.5 H 312 V 215 H 420 V 188 H 455 V 215 H 550 V 32 H 790 V 165 H 720 V 145 H 652.5 V 188 H 580 V 215 H 594 V 225 H 720 V 600 L 725 605 H 742 L 747 600 V 302 H 938 V 656 H 900 V 680 H 862 H 762 V 653 H 748 V 642 H 714 V 675 H 586 V 642 H 411 V 645 Z"
+                            ></path>
+                            <g fill="none" stroke="black" stroke-width="5">
+                                <path
+                                    d="M 375 645 H 344 L 226 484 V 288 H 190"
+                                ></path>
+                                <path
+                                    d="M 190 255 H 226 V 215 H 278 V 188"
+                                ></path>
+                                <path d="M 314 188 V 215 H 419 V 188"></path>
+                                <path d="M 455 188 V 215 H 550 V 188"></path>
+                                <path
+                                    d="M 580 188 V 215 H 594 V 225 H 720 V 250"
+                                ></path>
+                                <path
+                                    d="M 720 280 V 600 L 725 605 H 742 L 747 600 V 302 H 938 V 656 H 900 V 680 H 862"
+                                ></path>
+                                <path d="M 798 680 H 762"></path>
+                                <path
+                                    d="M 762 705 V 653 H 748 V 642 H 714 V 705 Z"
+                                ></path>
+                                <path d="M 714 675 H 586"></path>
+                                <path d="M 543 705 V 642 H 586 V 705 Z"></path>
+                                <path d="M 543 642 H 410"></path>
+                                <path
+                                    d="M 375 645 V 555 L 318 475 V 382 H 350 V 470 L 408 546 V 645 Z"
+                                ></path>
+                                <path
+                                    d="M 225 312 H 275 V 255 H 280 M 314 255 H 594 V 227"
+                                ></path>
+                                <path
+                                    d="M 282 312 h 35 V 255 H 282 Z m 0 -11 h 35 m -35 -11 h 35 m -35 -11 h 35 m -35 -12 h 35"
+                                ></path>
+                                <path d="M 750 645 H 794 V 602"></path>
+                                <path d="M 794 602 H 810 V 475 H 794 Z"></path>
+                                <g fill="white" id="Me2">
+                                    <path
+                                        d="M 190 285.5 V 368 H 150 L 38 197 H 190 V 257.5"
+                                    ></path>
+                                    <text
+                                        x="140"
+                                        y="270"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="23px"
+                                    >
+                                        Me2
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 227 264 v -1 a -20 20 0 0 1 20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 225 284 h 23"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <path d="M 226 256 v 8"></path>
+                                <g
+                                    id="Meet"
+                                    fill="white"
+                                    class="FloorPlan-module__K9y2-G__room"
+                                >
+                                    <path
+                                        d="M 282.5 188 H 225 V 32 H 390 V 188 H 309.5"
+                                    ></path>
+                                    <text
+                                        x="307"
+                                        y="118"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="23px"
+                                    >
+                                        Mötesrummet
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 307 181 a -20 -20 0 0 0 -20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 307 180 v 23"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <path d="M 305.5 203 h 6"></path>
+                                <path d="M 280 203 h 8"></path>
+                                <g fill="white" id="Me1">
+                                    <path
+                                        d="M 421.5 188 H 405 V 32 H 540 V 188 H 452.5"
+                                    ></path>
+                                    <text
+                                        x="472"
+                                        y="118"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="23px"
+                                    >
+                                        Me1
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 427 181 a 20 20 0 0 1 20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="4"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 427 180 v 23"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <path d="M 420 203 h 8.5"></path>
+                                <path d="M 445 203 h 8"></path>
+                                <g fill="white" id="D1">
+                                    <path
+                                        d="M 650 108 V 128 L 650 188 H 552.5 Z"
+                                        stroke="none"
+                                    ></path>
+                                    <path
+                                        d="M 552.5 188 H 548 V 32 H 650 V 108"
+                                    ></path>
+                                    <path d="M 650 128 V 188 H 577.5"></path>
+                                    <text
+                                        x="598"
+                                        y="118"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="23px"
+                                    >
+                                        D1
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 555 181 a 20 20 0 0 1 20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 555 180 v 23"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <path d="M 552 203 h 4.5"></path>
+                                <path d="M 574 203 h 6"></path>
+                                <g fill="white" id="D2">
+                                    <path
+                                        d="M 652.5 32 H 790 V 165 H 720 V 145 H 652.5"
+                                    ></path>
+                                    <text
+                                        x="725"
+                                        y="102"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="23px"
+                                    >
+                                        D2
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 629.5 127 a 20 20 0 0 1 20 -20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 628.5 127 h 24"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <g
+                                    data-highlight="spokforradet"
+                                    fill="white"
+                                    id="Ghost"
+                                >
+                                    <path
+                                        d="M 717.5 250 H 850 V 280 H 717.5"
+                                    ></path>
+                                    <text
+                                        x="760"
+                                        y="272"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="22px"
+                                    >
+                                        👻
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 698 254 a 20 20 0 0 0 20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 697 254 h 24"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <path d="M 720 273 v 6"></path>
+                                <g fill="white">
+                                    <path
+                                        d="M 800 313 V 302 H 747 V 350 H 800 V 330.5"
+                                    ></path>
+                                    <text
+                                        x="775"
+                                        y="335"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="18px"
+                                    >
+                                        WC
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 822 311.5 a 20 20 0 0 1 -20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 799 311.5 h 24"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <g fill="white">
+                                    <path
+                                        d="M 800 376 V 350 H 747 V 405 H 800 V 393.5"
+                                    ></path>
+                                    <text
+                                        x="775"
+                                        y="386"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="18px"
+                                    >
+                                        WC
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 822 374.5 a 20 20 0 0 1 -20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 799 374.5 h 24"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <g
+                                    data-highlight="proppskap"
+                                    fill="white"
+                                    class="FloorPlan-module__K9y2-G__room"
+                                >
+                                    <path
+                                        d="M 800 405 V 435 H 747 V 405 Z"
+                                    ></path>
+                                </g>
+                                <g fill="white">
+                                    <path
+                                        d="M 877 432 H 850 V 344 H 938 V 432 H 896"
+                                    ></path>
+                                    <text
+                                        x="894"
+                                        y="398"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="black"
+                                        font-size="18px"
+                                    >
+                                        WC
+                                    </text>
+                                </g>
+                                <path
+                                    d="M 897 434.5 a 20 20 0 0 1 -20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 875.5 434.5 v 21"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <g
+                                    id="Cubb"
+                                    fill="white"
+                                    class="FloorPlan-module__K9y2-G__room"
+                                >
+                                    <path
+                                        d="M 850 330.5 V 344 H 938 V 302 H 850 V 313"
+                                    ></path>
+                                </g>
+                                <path
+                                    d="M 827 311.5 a 20 20 0 0 0 20 20"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 826 311.5 h 24"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <path
+                                    d="M 827.5 680 a 32 32 0 0 1 -32 32"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 796 680 v 32"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                                <path
+                                    d="M 831.5 680 a 32 32 0 0 0 32 32"
+                                    stroke="gray"
+                                    stroke-dasharray="5"
+                                    stroke-width="2"
+                                ></path>
+                                <path
+                                    d="M 863.5 680 v 32"
+                                    stroke="black"
+                                    stroke-width="3"
+                                ></path>
+                            </g>
+                            <g fill="#aaa" stroke="#333">
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="352"
+                                        y="386"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="422"
+                                        y="386"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="352"
+                                        y="445"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="422"
+                                        y="445"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="578"
+                                        y="350"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="648"
+                                        y="350"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="578"
+                                        y="420"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="648"
+                                        y="420"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="578"
+                                        y="490"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="648"
+                                        y="490"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="578"
+                                        y="552"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="648"
+                                        y="552"
+                                        width="70"
+                                        height="30"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="475"
+                                        y="258"
+                                        width="30"
+                                        height="55"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                    <text
+                                        x="490"
+                                        y="295"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="white"
+                                        stroke="white"
+                                        font-size="23px"
+                                    >
+                                        T
+                                    </text>
+                                </g>
+                                <g class="FloorPlan-module__K9y2-G__table">
+                                    <rect
+                                        x="400"
+                                        y="258"
+                                        width="30"
+                                        height="55"
+                                        rx="2"
+                                        class="FloorPlan-module__K9y2-G__table"
+                                    ></rect>
+                                    <text
+                                        x="415"
+                                        y="295"
+                                        text-anchor="middle"
+                                        stroke-width="1"
+                                        fill="white"
+                                        stroke="white"
+                                        font-size="23px"
+                                    >
+                                        T
+                                    </text>
+                                </g>
+                            </g>
+                            <g
+                                class="FloorPlan-module__K9y2-G__sofa"
+                                fill="#d99"
+                            >
+                                <rect
+                                    x="410"
+                                    y="555"
+                                    width="70"
+                                    height="34"
+                                    rx="5"
+                                ></rect>
+                                <text
+                                    x="443"
+                                    y="577"
+                                    text-anchor="middle"
+                                    stroke-width="1"
+                                    fill="black"
+                                    font-size="20px"
+                                >
+                                    Soffa
+                                </text>
+                            </g>
+                            <g
+                                class="FloorPlan-module__K9y2-G__sofa"
+                                fill="#d99"
+                            >
+                                <rect
+                                    x="410.5"
+                                    y="605.5"
+                                    width="70"
+                                    height="34"
+                                    rx="5"
+                                ></rect>
+                                <text
+                                    x="445"
+                                    y="630"
+                                    text-anchor="middle"
+                                    stroke-width="1"
+                                    fill="black"
+                                    font-size="20px"
+                                >
+                                    Soffa
+                                </text>
+                            </g>
+                            <g
+                                text-anchor="start"
+                                stroke-width="1"
+                                fill="var(--orange-background)"
+                                font-size="23px"
+                            >
+                                <text x="60" y="600">
+                                    T = Mindre bord av trä.
+                                </text>
+                                <text x="60" y="640">
+                                    Stora träbord placeras
+                                </text>
+                                <text x="60" y="670">
+                                    intill höger vägg. Resten
+                                </text>
+                                <text x="60" y="700">är plastbord.</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </article>
+        </main>
+        <footer>
+            <nav>
+                <ul>
+                    <li>
+                        <img
+                            alt="Logo"
+                            width="84.4"
+                            height="82.5"
+                            style="color: transparent"
+                            src="/static/logo.png"
+                        />
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <img
+                            alt="See you!"
+                            width="306"
+                            height="84"
+                            decoding="async"
+                            data-nimg="1"
+                            class="seeYou"
+                            style="color: transparent"
+                            src="/static/see_you_trans.png"
+                        />
+                    </li>
+                </ul>
+            </nav>
+        </footer>
+    </body>
+</html>

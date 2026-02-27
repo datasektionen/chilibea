@@ -31,8 +31,8 @@ func InitOIDC(ctx context.Context) (oauth2.Config, *oidc.IDTokenVerifier) {
 
 	// Configure an OpenID Connect aware OAuth2 client.
 	oauth2Config := oauth2.Config{
-		ClientID:     os.Getenv("OIDC_CLIENT_ID"),
-		ClientSecret: os.Getenv("OIDC_CLIENT_SECRET"),
+		ClientID:     os.Getenv("OIDC_ID"),
+		ClientSecret: os.Getenv("OIDC_SECRET"),
 		RedirectURL:  os.Getenv("OIDC_REDIRECT_URL"),
 
 		// Discovery returns the OAuth2 endpoints.
@@ -102,7 +102,7 @@ func Auth(w http.ResponseWriter, r *http.Request, oauth2Config oauth2.Config) (s
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("there's an error with the signing method")
 		}
-		return []byte(os.Getenv("APP_SECRET_KEY")), nil
+		return []byte(os.Getenv("APP_SECRET")), nil
 	})
 
 	if err != nil {

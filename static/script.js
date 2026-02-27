@@ -32,3 +32,28 @@ function toggleFullscreen() {
     }
   }
 }
+
+function highlight(id) {
+  const places = [
+    "Me1",
+    "Me2",
+    "D1",
+    "D2",
+    "Ghost",
+    "Cubb",
+    "Mdor",
+    "Sjuk",
+    "Kit",
+    "Meet",
+    "Prop",
+    "Soda",
+  ];
+  places.forEach((place) => {
+    const elem = document.getElementById(place);
+    if (elem && place === id) {
+      elem.classList.add("highlight");
+    } else if (elem) {
+      elem.classList.remove("highlight");
+    }
+  });
+}

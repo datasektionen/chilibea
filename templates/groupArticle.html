@@ -1,0 +1,15 @@
+{{define "groupArticle"}}
+<article class="groupArticle">
+    <header>
+        <h2>{{.Name}}</h2>
+        <small>{{.Desc}}</small>
+    </header>
+    <main>{{range .Members}} {{template "memberSlot" .}} {{end}}</main>
+    <footer>
+        <small>
+            För att komma i kontakt med någon i {{.Name}}, skicka ett mail till
+            <a href="mailto:{{.Email}}">{{.Email}}</a>
+        </small>
+    </footer>
+</article>
+{{end}}
