@@ -50,3 +50,8 @@ ENV
     }
   }
 }
+
+variable "image_tag" {
+  type = string
+  default = "ghcr.io/datasektionen/chilibea:latest"
+}
