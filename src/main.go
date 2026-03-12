@@ -20,6 +20,7 @@ type Service struct {
 	verifier     *oidc.IDTokenVerifier
 	ctx          context.Context
 	t            *template.Template
+	sseEvents    chan fridgeData
 }
 
 func main() {
@@ -55,6 +56,7 @@ func main() {
 		verifier:     verifier,
 		ctx:          ctx,
 		t:            tmpl,
+		sseEvents:    make(chan fridgeData, 2),
 	}
 
 	// Set up HTTP server
@@ -69,6 +71,7 @@ func main() {
 	http.HandleFunc("DELETE /admin/fridge/{n}/remove", s.removeFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/remove", s.confirmDeleteFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/save", s.saveFridgeItemEdit)
+	http.HandleFunc("GET /sse/fridge", s.sseFridge)
 	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("GET /oidc/callback", s.HandleOAuth2)
 
@@ -108,7 +111,6 @@ func (s *Service) aboutPage(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Cache-Control", "public, max-age=86400")
 
-	slog.Info("Rendering about page", "groups", groups)
 	if err := s.t.ExecuteTemplate(w, "index.html", data); err != nil {
 		slog.Error("Failed to execute template", "error", err)
 	}

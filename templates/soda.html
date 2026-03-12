@@ -6,6 +6,9 @@
         <link rel="stylesheet" href="/static/style.css" />
         <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
         <script src="/static/script.js" defer></script>
+        <script src="/static/htmx.min.js" defer></script>
+        <script src="/static/htmx-ext-sse.js" defer></script>
+        <meta name="htmx-config" content='{"useTemplateFragments":"true"}' />
         <title>Läskkyl - METAdorerna</title>
         <meta
             name="description"
@@ -56,31 +59,13 @@
                         style="pointer-events: none"
                     />
                 </div>
-                <div class="productsDiv">
-                    <div class="typesDiv">
-                        <img src="/static/dryck.gif" width="350" height="175" />
-                        {{range .Sodas}}
-                        <div class="product">
-                            <p>{{.Name}}</p>
-                            <div class="dots"></div>
-                            <p>{{.Price}} kr</p>
-                        </div>
-                        {{end}}
-                    </div>
-                    <div class="typesDiv">
-                        <img
-                            src="/static/snacks.gif"
-                            width="350"
-                            height="175"
-                        />
-                        {{range .Snacks}}
-                        <div class="product">
-                            <p>{{.Name}}</p>
-                            <div class="dots"></div>
-                            <p>{{.Price}} kr</p>
-                        </div>
-                        {{end}}
-                    </div>
+                <div
+                    class="productsDiv"
+                    hx-ext="sse"
+                    sse-connect="/sse/fridge"
+                    sse-swap="fridge"
+                >
+                    {{template "sodaList" .}}
                 </div>
                 <div class="minstaKopDiv">
                     <h2 class="minstaKop">!!!! MINSTA KÖP 10 KR !!!!</h2>
