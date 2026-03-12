@@ -69,6 +69,7 @@ func main() {
 	http.HandleFunc("DELETE /admin/fridge/{n}/remove", s.removeFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/remove", s.confirmDeleteFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/save", s.saveFridgeItemEdit)
+	http.HandleFunc("GET /sse/fridge", s.sseFridge)
 	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("GET /oidc/callback", s.HandleOAuth2)
 
