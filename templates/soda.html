@@ -6,6 +6,9 @@
         <link rel="stylesheet" href="/static/style.css" />
         <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
         <script src="/static/script.js" defer></script>
+        <script src="/static/htmx.min.js" defer></script>
+        <script src="/static/htmx-ext-sse.js" defer></script>
+        <meta name="htmx-config" content='{"useTemplateFragments":"true"}' />
         <title>Läskkyl - METAdorerna</title>
         <meta
             name="description"
@@ -60,7 +63,7 @@
                     class="productsDiv"
                     hx-ext="sse"
                     sse-connect="/sse/fridge"
-                    sse-swap="message"
+                    sse-swap="fridge"
                 >
                     {{template "sodaList" .}}
                 </div>

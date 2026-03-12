@@ -1,22 +1,22 @@
-{{define "sodaList"}}
+{{define "sodaList" -}}
 <div class="typesDiv">
     <img src="/static/dryck.gif" width="350" height="175" />
-    {{range .Sodas}}
+    {{- range .Sodas -}}
     <div class="product">
         <p>{{.Name}}</p>
         <div class="dots"></div>
         <p>{{.Price}} kr</p>
     </div>
-    {{end}}
+    {{- end -}}
 </div>
 <div class="typesDiv">
     <img src="/static/snacks.gif" width="350" height="175" />
-    {{range .Snacks}}
+    {{- range .Snacks -}}
     <div class="product">
         <p>{{.Name}}</p>
         <div class="dots"></div>
         <p>{{.Price}} kr</p>
     </div>
-    {{end}}
+    {{- end -}}
 </div>
-{{end}}
+{{- end}}

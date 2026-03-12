@@ -1,34 +1,46 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log/slog"
 	"net/http"
-	"time"
+	"strings"
 )
 
 func (s *Service) sodaPage(w http.ResponseWriter, r *http.Request) {
+	data, err := s.sodaItems(w, r)
+	if err != nil {
+		return
+	}
+
+	if err := s.t.ExecuteTemplate(w, "soda.html", data); err != nil {
+		slog.Error("Failed to execute template:", err)
+		http.Error(w, "Template render error", http.StatusInternalServerError)
+	}
+}
+
+
+func (s *Service) sodaItems(w http.ResponseWriter, r *http.Request) (data fridgeData, err error) {
 	sodas, err := getSodas(s.db, s.ctx)
 	if err != nil {
 		slog.Error("Failed to query soda fridge:", err)
 		http.Error(w, "Cant query soda fridge", http.StatusInternalServerError)
-		return
+		return data, err
 	}
 	snacks, err := getSnacks(s.db, s.ctx)
 	if err != nil {
 		slog.Error("Failed to query snack fridge:", err)
 		http.Error(w, "Cant query snack fridge", http.StatusInternalServerError)
-		return
+		return data, err
 	}
 
-	data := fridgeData{
+	data = fridgeData{
 		Sodas:  sodas,
 		Snacks: snacks,
 	}
-	if err := s.t.ExecuteTemplate(w, "soda.html", data); err != nil {
-		slog.Error("Failed to execute template:", err)
-		http.Error(w, "Template render error", http.StatusInternalServerError)
-	}
+
+	return data, nil
 }
 
 func (s *Service) sseFridge(w http.ResponseWriter, r *http.Request) {
@@ -43,25 +55,25 @@ func (s *Service) sseFridge(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	slog.Info("Client connected to SSE stream")
+
 	for {
 		select {
 		case <-r.Context().Done():
-			// Client disconnected
+			slog.Info("Client disconnected from SSE stream")
 			return
-		default:
-			slog.Info("Generating new SSE message for fridge updates")
-			// Simulate generating an updated list (usually from a DB or channel)
-			htmlSnippet := "<li>Item " + time.Now().Format("15:04:05") + "</li>"
+		case data := <-s.sseEvents:
+			slog.Info("Updating fridge")
+			var buf bytes.Buffer
+			if err := s.t.ExecuteTemplate(&buf, "sodaList", data); err != nil {
+				slog.Error("Failed to execute template:", err)
+				http.Error(w, "Template render error", http.StatusInternalServerError)
+				return
+			}
+			html := strings.ReplaceAll(buf.String(), "\n", "")
+			fmt.Fprintf(w, "event: fridge\ndata: %s\n\n", html)
 
-			// 4. Format the SSE message
-			// SSE requires the "data: " prefix and two newlines at the end
-			fmt.Fprintf(w, "data: %s\n\n", htmlSnippet)
-
-			// 5. Push data to the client immediately
 			flusher.Flush()
-
-			// Wait before next update
-			time.Sleep(2 * time.Second)
 		}
 	}
 }

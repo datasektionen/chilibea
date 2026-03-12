@@ -20,6 +20,7 @@ type Service struct {
 	verifier     *oidc.IDTokenVerifier
 	ctx          context.Context
 	t            *template.Template
+	sseEvents    chan fridgeData
 }
 
 func main() {
@@ -55,6 +56,7 @@ func main() {
 		verifier:     verifier,
 		ctx:          ctx,
 		t:            tmpl,
+		sseEvents:    make(chan fridgeData, 2),
 	}
 
 	// Set up HTTP server
@@ -109,7 +111,6 @@ func (s *Service) aboutPage(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Cache-Control", "public, max-age=86400")
 
-	slog.Info("Rendering about page", "groups", groups)
 	if err := s.t.ExecuteTemplate(w, "index.html", data); err != nil {
 		slog.Error("Failed to execute template", "error", err)
 	}

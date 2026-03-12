@@ -138,7 +138,14 @@ func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
 
 	if err := s.t.ExecuteTemplate(w, "fridgeItemRow.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
+		return
 	}
+
+	items, err := s.sodaItems(w, r)
+	if err != nil {
+		return
+	}
+	s.sseEvents<-items
 }
 
 func (s *Service) editFridgeItem(w http.ResponseWriter, r *http.Request) {
@@ -245,6 +252,11 @@ func (s *Service) saveFridgeItemEdit(w http.ResponseWriter, r *http.Request) {
 	if err := s.t.ExecuteTemplate(w, "saveItem.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
 	}
+	items, err := s.sodaItems(w, r)
+	if err != nil {
+		return
+	}
+	s.sseEvents<-items
 }
 
 func (s *Service) confirmDeleteFridgeItem(w http.ResponseWriter, r *http.Request) {
@@ -277,4 +289,9 @@ func (s *Service) removeFridgeItem(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to get fridge item", http.StatusBadRequest)
 		return
 	}
+	items, err := s.sodaItems(w, r)
+	if err != nil {
+		return
+	}
+	s.sseEvents<-items
 }
