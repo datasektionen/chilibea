@@ -14,14 +14,13 @@ type adminData struct {
 }
 
 func FridgePerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
-	user, perms, err := Auth(w, r, s.oauth2Config)
+	_, perms, err := Auth(w, r, s.oauth2Config)
 	if err != nil {
 		slog.Error("Authentication error:", err)
 		http.Error(w, "Authentication error", http.StatusInternalServerError)
 		return false
 	}
 	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
-		slog.Warn("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
 		http.Redirect(w, r, "/about", http.StatusSeeOther)
 		return false
 	}
@@ -29,14 +28,13 @@ func FridgePerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
 }
 
 func CleanPerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
-	user, perms, err := Auth(w, r, s.oauth2Config)
+	_, perms, err := Auth(w, r, s.oauth2Config)
 	if err != nil {
 		slog.Error("Authentication error:", err)
 		http.Error(w, "Authentication error", http.StatusInternalServerError)
 		return false
 	}
 	if !(HasPermission(perms, "clean") || HasPermission(perms, "admin")) {
-		slog.Warn("Unauthorized access attempt to add fridge item", "user", user, "permissions", perms)
 		http.Redirect(w, r, "/about", http.StatusSeeOther)
 		return false
 	}
@@ -55,7 +53,6 @@ func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 	adminPerm := HasPermission(perms, "admin")
 
 	if !(adminPerm || fridgePerm || cleanPerm) {
-		slog.Warn("Unauthorized access attempt to admin page", "user", user, "permissions", perms)
 		http.Redirect(w, r, "/about", http.StatusSeeOther)
 		return
 	}
@@ -79,7 +76,6 @@ func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 			Sodas:  sodas,
 			Snacks: snacks,
 		}
-		slog.Info("Admin page accessed", "user", user, "permissions", perms, "fridge", fridge)
 	}
 
 	data := adminData{
