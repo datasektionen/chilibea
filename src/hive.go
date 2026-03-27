@@ -14,10 +14,11 @@ type HiveGroup struct {
 	Id     string `json:"group_id"`
 	Domain string `json:"group_domain"`
 	Tag    string `json:"tag_content"`
+	Desc   string `json:"group_description"`
 }
 
 func getHiveGroup() ([]Group, error) {
-	url := fmt.Sprintf("%s/tagged/internal/groups", os.Getenv("HIVE_URL"))
+	url := fmt.Sprintf("%s/tagged/internal/groups?description=true", os.Getenv("HIVE_URL"))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		slog.Error("Failed to create request:", err)
@@ -52,7 +53,7 @@ func getHiveGroup() ([]Group, error) {
 		}
 		result = append(result, Group{
 			Name:    strings.TrimPrefix(g.Name, "METAdorerna "),
-			Desc:    g.Id,
+			Desc:    g.Desc,
 			Email:   fmt.Sprintf("%s@%s", g.Id, g.Domain),
 			Members: members,
 		})
