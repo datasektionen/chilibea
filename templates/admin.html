@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
         <script src="/static/htmx.min.js" defer></script>
         <script src="/static/script.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+        <script src="/static/Sortable.min.js"></script>
         <meta name="htmx-config" content='{"useTemplateFragments":"true"}' />
         <title>Admin - METAdorerna</title>
         <meta
@@ -54,7 +54,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <td class="drag-handle" style="cursor: grab;"></td>
+                                <td
+                                    class="drag-handle"
+                                    style="cursor: grab"
+                                ></td>
                                 <td scope="col">Namn</td>
                                 <td scope="col">Pris</td>
                                 <td scope="col"></td>
@@ -75,7 +78,10 @@
                     <table>
                         <thead>
                             <tr>
-                                <td class="drag-handle" style="cursor: grab;"></td>
+                                <td
+                                    class="drag-handle"
+                                    style="cursor: grab"
+                                ></td>
                                 <td scope="col">Namn</td>
                                 <td scope="col">Pris</td>
                                 <td scope="col"></td>
@@ -135,38 +141,38 @@
                 const sortSnacks = document.getElementById("snack-table");
 
                 new Sortable(sortSodas, {
-                    handle: '.handle',
+                    handle: ".handle",
                     animation: 150,
                     onEnd: function () {
                         const rows = Array.from(sortSodas.children);
 
                         const items = rows.map((row, index) => ({
                             name: row.dataset.name,
-                            priority: index
+                            priority: index,
                         }));
 
-                        htmx.ajax('POST', '/admin/fridge/priority', {
+                        htmx.ajax("POST", "/admin/fridge/priority", {
                             values: { items: JSON.stringify(items) },
-                            swap: "none"
+                            swap: "none",
                         });
-                    }
+                    },
                 });
                 new Sortable(sortSnacks, {
-                    handle: '.handle',
+                    handle: ".handle",
                     animation: 150,
                     onEnd: function () {
                         const rows = Array.from(sortSnacks.children);
 
                         const items = rows.map((row, index) => ({
                             name: row.dataset.name,
-                            priority: index
+                            priority: index,
                         }));
 
-                        htmx.ajax('POST', '/admin/fridge/priority', {
+                        htmx.ajax("POST", "/admin/fridge/priority", {
                             values: { items: JSON.stringify(items) },
-                            swap: "none"
+                            swap: "none",
                         });
-                    }
+                    },
                 });
             });
         </script>
