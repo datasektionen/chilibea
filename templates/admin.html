@@ -54,6 +54,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <td class="drag-handle" style="cursor: grab;"></td>
                                 <td scope="col">Namn</td>
                                 <td scope="col">Pris</td>
                                 <td scope="col"></td>
@@ -74,6 +75,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <td class="drag-handle" style="cursor: grab;"></td>
                                 <td scope="col">Namn</td>
                                 <td scope="col">Pris</td>
                                 <td scope="col"></td>
@@ -133,6 +135,7 @@
                 const sortSnacks = document.getElementById("snack-table");
 
                 new Sortable(sortSodas, {
+                    handle: '.handle',
                     animation: 150,
                     onEnd: function () {
                         const rows = Array.from(sortSodas.children);
@@ -149,6 +152,7 @@
                     }
                 });
                 new Sortable(sortSnacks, {
+                    handle: '.handle',
                     animation: 150,
                     onEnd: function () {
                         const rows = Array.from(sortSnacks.children);
