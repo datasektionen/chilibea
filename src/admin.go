@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -141,7 +143,7 @@ func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	s.sseEvents<-items
+	s.sseEvents <- items
 }
 
 func (s *Service) editFridgeItem(w http.ResponseWriter, r *http.Request) {
@@ -252,7 +254,7 @@ func (s *Service) saveFridgeItemEdit(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	s.sseEvents<-items
+	s.sseEvents <- items
 }
 
 func (s *Service) confirmDeleteFridgeItem(w http.ResponseWriter, r *http.Request) {
@@ -289,5 +291,36 @@ func (s *Service) removeFridgeItem(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	s.sseEvents<-items
+	s.sseEvents <- items
+}
+
+type Item struct {
+	Name     string `json:"name"`
+	Priority int    `json:"priority"`
+}
+
+func (s *Service) updateFridgeItemPriority(w http.ResponseWriter, r *http.Request) {
+	if !FridgePerms(w, r, s) {
+		return
+	}
+
+	r.ParseForm()
+
+	itemsJSON := r.FormValue("items")
+
+	var items []Item
+	err := json.Unmarshal([]byte(itemsJSON), &items)
+	if err != nil {
+		log.Println("JSON error:", err)
+		http.Error(w, "bad request", 400)
+		return
+	}
+
+	for _, item := range items {
+		if err := updateFridgeItemPriority(s.db, s.ctx, item.Name, item.Priority); err != nil {
+			slog.Error("Failed to update fridge item priority:", err)
+			http.Error(w, "Failed to update fridge item priority", http.StatusInternalServerError)
+			return
+		}
+	}
 }

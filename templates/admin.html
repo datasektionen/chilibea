@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
         <script src="/static/htmx.min.js" defer></script>
         <script src="/static/script.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
         <meta name="htmx-config" content='{"useTemplateFragments":"true"}' />
         <title>Admin - METAdorerna</title>
         <meta
@@ -60,7 +61,7 @@
                         </thead>
                         <tbody id="soda-table">
                             {{range .FridgeData.Sodas}}
-                            <tr>
+                            <tr data-id="{{.Priority}}" data-name="{{.Name}}">
                                 {{template "fridgeItem" .}}
                             </tr>
                             {{end}}
@@ -80,7 +81,7 @@
                         </thead>
                         <tbody id="snack-table">
                             {{range .FridgeData.Snacks}}
-                            <tr>
+                            <tr data-id="{{.Priority}}" data-name="{{.Name}}">
                                 {{template "fridgeItem" .}}
                             </tr>
                             {{end}}
@@ -126,5 +127,44 @@
                 </ul>
             </nav>
         </footer>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const sortSodas = document.getElementById("soda-table");
+                const sortSnacks = document.getElementById("snack-table");
+
+                new Sortable(sortSodas, {
+                    animation: 150,
+                    onEnd: function () {
+                        const rows = Array.from(sortSodas.children);
+
+                        const items = rows.map((row, index) => ({
+                            name: row.dataset.name,
+                            priority: index
+                        }));
+
+                        htmx.ajax('POST', '/admin/fridge/priority', {
+                            values: { items: JSON.stringify(items) },
+                            swap: "none"
+                        });
+                    }
+                });
+                new Sortable(sortSnacks, {
+                    animation: 150,
+                    onEnd: function () {
+                        const rows = Array.from(sortSnacks.children);
+
+                        const items = rows.map((row, index) => ({
+                            name: row.dataset.name,
+                            priority: index
+                        }));
+
+                        htmx.ajax('POST', '/admin/fridge/priority', {
+                            values: { items: JSON.stringify(items) },
+                            swap: "none"
+                        });
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
