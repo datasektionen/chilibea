@@ -323,4 +323,10 @@ func (s *Service) updateFridgeItemPriority(w http.ResponseWriter, r *http.Reques
 			return
 		}
 	}
+
+	newItems, err := s.sodaItems(w, r)
+	if err != nil {
+		return
+	}
+	s.sseEvents <- newItems
 }
