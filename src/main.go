@@ -36,7 +36,7 @@ func main() {
 	db, err := pgxpool.New(context.Background(), dbURL)
 	if _, err := db.Exec(context.Background(), `
 		CREATE TYPE fridgeType AS ENUM ('soda', 'snack');
-		CREATE TABLE IF NOT EXISTS sodaFridge (name TEXT PRIMARY KEY, type fridgeType NOT NULL, price FLOAT NOT NULL);
+		CREATE TABLE IF NOT EXISTS sodaFridge (name TEXT PRIMARY KEY, type fridgeType NOT NULL, price FLOAT NOT NULL, priority INT NOT NULL);
 		CREATE TABLE IF NOT EXISTS cleanPoints (id SERIAL PRIMARY KEY, kthid VARCHAR(10) NOT NULL, date TIMESTAMP NOT NULL);
 		`); err != nil {
 		slog.Error("Failed to create tables:", err)
@@ -71,6 +71,7 @@ func main() {
 	http.HandleFunc("DELETE /admin/fridge/{n}/remove", s.removeFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/remove", s.confirmDeleteFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/save", s.saveFridgeItemEdit)
+	http.HandleFunc("POST /admin/fridge/priority", s.updateFridgeItemPriority)
 	http.HandleFunc("GET /sse/fridge", s.sseFridge)
 	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("GET /oidc/callback", s.HandleOAuth2)

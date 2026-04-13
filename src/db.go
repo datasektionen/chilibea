@@ -8,13 +8,15 @@ import (
 )
 
 type SodaItem struct {
-	Name  string
-	Price float32
+	Name     string
+	Price    float32
+	Priority int
 }
 
 type SnackItem struct {
-	Name  string
-	Price float32
+	Name     string
+	Price    float32
+	Priority int
 }
 
 type FridgeItem struct {
@@ -29,7 +31,7 @@ type fridgeData struct {
 }
 
 func getSodas(db *pgxpool.Pool, ctx context.Context) ([]SodaItem, error) {
-	sodaRows, err := db.Query(ctx, "SELECT name, price FROM sodaFridge WHERE type = 'soda'")
+	sodaRows, err := db.Query(ctx, "SELECT name, price FROM sodaFridge WHERE type = 'soda' ORDER BY priority")
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +60,7 @@ func getSoda(db *pgxpool.Pool, ctx context.Context, name string) (*SodaItem, err
 }
 
 func getSnacks(db *pgxpool.Pool, ctx context.Context) ([]SnackItem, error) {
-	snackRows, err := db.Query(ctx, "SELECT name, price FROM sodaFridge WHERE type = 'snack'")
+	snackRows, err := db.Query(ctx, "SELECT name, price FROM sodaFridge WHERE type = 'snack' ORDER BY priority")
 	if err != nil {
 		return nil, err
 	}
@@ -95,12 +97,17 @@ func getFridgeItem(db *pgxpool.Pool, ctx context.Context, name string) (FridgeIt
 }
 
 func addFridgeItem(db *pgxpool.Pool, ctx context.Context, name, t string, price float32) error {
-	_, err := db.Exec(ctx, "INSERT INTO sodaFridge (name, type, price) VALUES ($1, $2, $3)", name, t, price)
+	_, err := db.Exec(ctx, "INSERT INTO sodaFridge (name, type, price, priority) VALUES ($1, $2, $3, (SELECT COALESCE(MAX(priority), 0) + 1 FROM sodaFridge WHERE type = $2))", name, t, price)
 	return err
 }
 
 func updateFridgeItem(db *pgxpool.Pool, ctx context.Context, oldName, name string, price float32) error {
 	_, err := db.Exec(ctx, "UPDATE sodaFridge SET name = $1, price = $2 WHERE name = $3", name, price, oldName)
+	return err
+}
+
+func updateFridgeItemPriority(db *pgxpool.Pool, ctx context.Context, name string, priority int) error {
+	_, err := db.Exec(ctx, "UPDATE sodaFridge SET priority = $1 WHERE name = $2", priority, name)
 	return err
 }
 
