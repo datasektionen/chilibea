@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="/static/style.css" />
         <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
+        <link rel="stylesheet" href="/static/pico.colors.min.css" />
         <script src="/static/htmx.min.js" defer></script>
         <script src="/static/script.js" defer></script>
         <script src="/static/Sortable.min.js"></script>
@@ -34,6 +35,7 @@
                 <ul>
                     <li><a href="/about">Hem</a></li>
                     <li><a href="/meta">META</a></li>
+                    <li><a href="/mandagsstad">Måndagsstäd</a></li>
                     <li><a href="/laskkyl">Läskkyl</a></li>
                     <li><a href="/admin">Admin</a></li>
                 </ul>
@@ -102,6 +104,98 @@
             <div>
                 <h3>Städning</h3>
                 <p>Här kan du ändra inställningar för städning.</p>
+                <article>
+                    <h4>Ge person städpoäng</h4>
+                    <p>
+                        Här kan du ge personer städpoäng för ett bra
+                        <strong>Måndagsstäd</strong>
+                    </p>
+                    <form
+                        hx-put="/admin/cleaning/point"
+                        hx-target="#clean-leaderboard"
+                        hx-swap="outerHTML"
+                    >
+                        <fieldset role="group">
+                            <input
+                                id="clean-name"
+                                type="text"
+                                placeholder="Namn"
+                                name="name"
+                                list="sso-search-users-main"
+                                hx-get="/admin/cleaning/search/main"
+                                hx-trigger="keyup changed delay:500ms"
+                                hx-target="#sso-search-users-main"
+                                hx-swap="outerHTML"
+                            />
+                            <datalist id="sso-search-users-main"></datalist>
+                            <input type="date" name="date" value="{{.Date}}" />
+
+                            <input type="submit" value="Ge poäng" />
+                        </fieldset>
+                    </form>
+                    <p id="clean-point-msg"></p>
+                </article>
+                <article>
+                    <h4>Sök upp person</h4>
+                    <p>Kolla upp en persons poäng, med ett intervall.</p>
+                    <form
+                        hx-get="/admin/cleaning/user"
+                        hx-target="#clean-user-list"
+                        hx-swap="outerHTML"
+                    >
+                        <fieldset role="group">
+                            <input
+                                id="search-name"
+                                type="text"
+                                placeholder="Namn"
+                                name="name"
+                                list="sso-search-users-clean"
+                                hx-get="/admin/cleaning/search/clean"
+                                hx-trigger="keyup changed delay:500ms"
+                                hx-target="#sso-search-users-clean"
+                                hx-swap="outerHTML"
+                            />
+                            <datalist id="sso-search-users-clean"></datalist>
+                            <input
+                                type="date"
+                                name="from"
+                                value="{{.SemesterDate}}"
+                            />
+                            <input type="date" name="to" value="{{.Date}}" />
+                            <input type="submit" value="Sök" />
+                        </fieldset>
+                    </form>
+                    <div style="max-height: 30rem; overflow-y: scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>Datum</td>
+                                    <td>Tabort</td>
+                                </tr>
+                            </thead>
+                            <tbody id="clean-user-list"></tbody>
+                        </table>
+                    </div>
+                </article>
+                <article>
+                    <h4>Städlista (Läsåret)</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Namn</td>
+                                <td>Poäng</td>
+                            </tr>
+                        </thead>
+                        <tbody id="clean-leaderboard">
+                            {{range .CleanLeaderboard}}
+                            <tr>
+                                <td>{{.Kthid}}</td>
+                                <td>{{.Points}}</td>
+                            </tr>
+                            {{end}}
+                        </tbody>
+                    </table>
+                </article>
             </div>
             {{ end }}
         </main>

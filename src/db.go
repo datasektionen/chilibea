@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -114,4 +115,120 @@ func updateFridgeItemPriority(db *pgxpool.Pool, ctx context.Context, name string
 func deleteFridgeItem(db *pgxpool.Pool, ctx context.Context, name string) error {
 	_, err := db.Exec(ctx, "DELETE FROM sodaFridge WHERE name = $1", name)
 	return err
+}
+
+func addCleanPoint(db *pgxpool.Pool, ctx context.Context, kthid string, date pgtype.Date) error {
+	_, err := db.Exec(ctx, "INSERT INTO cleanPoints (kthid, date) VALUES ($1, $2)", kthid, date)
+	return err
+}
+
+func removeCleanPoint(db *pgxpool.Pool, ctx context.Context, kthid string, date pgtype.Date) error {
+	_, err := db.Exec(ctx, "DELETE FROM cleanPoints WHERE kthid = $1 AND date = $2", kthid, date)
+	return err
+}
+
+func getCleanPointsByDay(db *pgxpool.Pool, ctx context.Context, date pgtype.Date) ([]string, error) {
+	rows, err := db.Query(ctx, "SELECT kthid FROM cleanPoints WHERE date = $1", date)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var kthids []string
+	for rows.Next() {
+		var kthid string
+		if err := rows.Scan(&kthid); err != nil {
+			slog.Error("Failed to scan clean point:", err)
+			continue
+		}
+		kthids = append(kthids, kthid)
+	}
+
+	return kthids, nil
+}
+
+func getCleanPointsByKthid(db *pgxpool.Pool, ctx context.Context, kthid string, from pgtype.Date, to pgtype.Date) ([]pgtype.Date, error) {
+	slog.Info("Getting clean points for kthid", "kthid", kthid, "from", from, "to", to)
+	rows, err := db.Query(ctx, "SELECT date FROM cleanPoints WHERE kthid = $1 AND date >= $2 AND date <= $3", kthid, from, to)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var dates []pgtype.Date
+	for rows.Next() {
+		var date pgtype.Date
+		if err := rows.Scan(&date); err != nil {
+			slog.Error("Failed to scan clean point:", err)
+			continue
+		}
+		dates = append(dates, date)
+	}
+
+	return dates, nil
+}
+
+type CleanerPoints struct {
+	Kthid  string
+	Points int
+}
+
+func getTop10CleanersWithPoints(db *pgxpool.Pool, ctx context.Context) ([]CleanerPoints, error) {
+	rows, err := db.Query(ctx, "SELECT kthid, COUNT(*) AS points FROM cleanPoints GROUP BY kthid ORDER BY points DESC LIMIT 10")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var cleaners []CleanerPoints
+	for rows.Next() {
+		var cleaner CleanerPoints
+		if err := rows.Scan(&cleaner.Kthid, &cleaner.Points); err != nil {
+			slog.Error("Failed to scan cleaner:", err)
+			continue
+		}
+		cleaners = append(cleaners, cleaner)
+	}
+
+	return cleaners, nil
+}
+
+func getTop10CleanersWithPointsSince(db *pgxpool.Pool, ctx context.Context, date pgtype.Date) ([]CleanerPoints, error) {
+	rows, err := db.Query(ctx, "SELECT kthid, COUNT(*) AS points FROM cleanPoints WHERE date >= $1 GROUP BY kthid ORDER BY points DESC LIMIT 10", date)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var cleaners []CleanerPoints
+	for rows.Next() {
+		var cleaner CleanerPoints
+		if err := rows.Scan(&cleaner.Kthid, &cleaner.Points); err != nil {
+			slog.Error("Failed to scan cleaner:", err)
+			continue
+		}
+		cleaners = append(cleaners, cleaner)
+	}
+
+	return cleaners, nil
+}
+
+func getAllCleanersSince(db *pgxpool.Pool, ctx context.Context, date pgtype.Date) ([]CleanerPoints, error) {
+	rows, err := db.Query(ctx, "SELECT kthid, COUNT(*) AS points FROM cleanPoints WHERE date >= $1 GROUP BY kthid ORDER BY points DESC", date)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var cleaners []CleanerPoints
+	for rows.Next() {
+		var cleaner CleanerPoints
+		if err := rows.Scan(&cleaner.Kthid, &cleaner.Points); err != nil {
+			slog.Error("Failed to scan cleaner:", err)
+			continue
+		}
+		cleaners = append(cleaners, cleaner)
+	}
+
+	return cleaners, nil
 }

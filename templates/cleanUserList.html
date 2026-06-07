@@ -1,0 +1,16 @@
+<tbody id="clean-user-list">
+    {{range .Dates}}
+    <tr>
+        <td>{{.}}</td>
+        <td>
+            <button
+                hx-delete="/admin/cleaning/point?name={{$.Kthid}}&date={{.}}"
+                hx-target="closest tr"
+                hx-swap="delete"
+            >
+                ❌
+            </button>
+        </td>
+    </tr>
+    {{end}}
+</tbody>

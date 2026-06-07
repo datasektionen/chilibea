@@ -1,0 +1,7 @@
+<datalist id="sso-search-users-{{.Id}}">
+    {{range .Options}}
+    <option value="{{.KthId}}">
+        {{.FirstName}} {{.FamilyName}}({{.KthId}})
+    </option>
+    {{end}}
+</datalist>

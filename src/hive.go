@@ -63,6 +63,7 @@ func getHiveGroup() ([]Group, error) {
 }
 
 type SsoUser struct {
+	KthId      string `json:"kthid"`
 	FirstName  string `json:"firstName"`
 	FamilyName string `json:"familyName"`
 	Email      string `json:"email"`
@@ -133,4 +134,36 @@ func getMembersInGroup(group HiveGroup, client *http.Client) ([]Member, error) {
 	}
 
 	return result, nil
+}
+
+func getSSOUsers(kthids []string) ([]SsoUser, error) {
+	url := fmt.Sprintf("%s/api/users?format=array&picture=thumbnail", os.Getenv("SSO_URL"))
+	for _, id := range kthids {
+		url += fmt.Sprintf("&u=%s", id)
+	}
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		slog.Error("Failed to create request:", err)
+		return nil, err
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		slog.Error("Failed to make request:", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		slog.Error("Unexpected status code:", "status", resp.StatusCode)
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	var users []SsoUser
+	if err := json.NewDecoder(resp.Body).Decode(&users); err != nil {
+		slog.Error("Failed to decode response:", err)
+		return nil, err
+	}
+
+	return users, nil
 }

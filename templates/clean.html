@@ -7,9 +7,8 @@
         <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
         <script src="/static/script.js" defer></script>
         <script src="/static/htmx.min.js" defer></script>
-        <script src="/static/htmx-ext-sse.js" defer></script>
         <meta name="htmx-config" content='{"useTemplateFragments":"true"}' />
-        <title>Läskkyl - METAdorerna</title>
+        <title>Måndagsstäd - METAdorerna</title>
         <meta
             name="description"
             content="Konglig Datasektionen - METAdorerna"
@@ -35,8 +34,8 @@
                     <ul>
                         <li><a href="/about">Hem</a></li>
                         <li><a href="/meta">META</a></li>
-                        <li><a href="/mandagsstad">Måndagsstäd</a></li>
                         <li><a href="/laskkyl">Läskkyl</a></li>
+                        <li><a href="/mandagsstad">Måndagsstäd</a></li>
                         <li><a href="/admin">Admin</a></li>
                     </ul>
                 </nav>
@@ -52,35 +51,88 @@
                         height="40"
                     />
                 </button>
-                <div class="header">
+                <div class="header" style="flex-direction: column">
                     <img
-                        src="/static/laskkyl.gif"
-                        width="800"
-                        height="400"
+                        src="/static/Måndagsstäd-pink.gif"
+                        width="600"
+                        height="125"
+                        style="pointer-events: none"
+                    />
+                    <img
+                        src="/static/Måndagsstäd-all-time.gif"
+                        width="300"
+                        height="75"
                         style="pointer-events: none"
                     />
                 </div>
                 <div
-                    class="productsDiv"
-                    hx-ext="sse"
-                    sse-connect="/sse/fridge"
-                    sse-swap="fridge"
+                    class="typesDiv"
+                    style="min-width: min(70%, 40rem); margin-top: 2rem"
                 >
-                    {{template "sodaList" .}}
+                    {{- range .UsersAll -}}
+                    <div
+                        class="product"
+                        style="display: flex; align-items: center"
+                    >
+                        <img
+                            src="{{.ImgUrl}}"
+                            alt=""
+                            style="
+                                aspect-ratio: 1;
+                                width: 2.5rem;
+                                margin-right: 0.3rem;
+                                object-fit: cover;
+                                clip-path: circle(50%);
+                            "
+                        />
+                        <p>{{.Name}}</p>
+                        <div class="dots"></div>
+                        <p>{{.Points}} städ</p>
+                    </div>
+                    {{- end -}}
                 </div>
-                <div class="minstaKopDiv">
-                    <h2 class="minstaKop">!!!! MINSTA KÖP 10 KR !!!!</h2>
-                    <p>
-                        Annars dödar swishavgifterna oss :,(
-                        <br />
-                        ...och METAdorerna dig!
-                        <br />
-                        <br />
-                        Om du har önskemål eller frågor kontakta oss på
-                        <a href="mailto:laskkyl@metadorerna.se">
-                            laskkyl@metadorerna.se
-                        </a>
-                    </p>
+                <div
+                    class="header"
+                    style="flex-direction: column; margin-top: 6rem"
+                >
+                    <img
+                        src="/static/Måndagsstäd-anim.gif"
+                        width="360"
+                        height="75"
+                        style="pointer-events: none"
+                    />
+                    <img
+                        src="/static/i-ar.gif"
+                        width="105"
+                        height="56"
+                        style="pointer-events: none"
+                    />
+                </div>
+                <div
+                    class="typesDiv"
+                    style="min-width: min(70%, 40rem); margin-top: 2rem"
+                >
+                    {{- range .UsersYear -}}
+                    <div
+                        class="product"
+                        style="display: flex; align-items: center"
+                    >
+                        <img
+                            src="{{.ImgUrl}}"
+                            alt=""
+                            style="
+                                aspect-ratio: 1;
+                                width: 2.5rem;
+                                margin-right: 0.3rem;
+                                object-fit: cover;
+                                clip-path: circle(50%);
+                            "
+                        />
+                        <p>{{.Name}}</p>
+                        <div class="dots"></div>
+                        <p>{{.Points}} städ</p>
+                    </div>
+                    {{- end -}}
                 </div>
             </div>
         </main>

@@ -2,17 +2,25 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
+	"time"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type adminData struct {
-	User       string
-	FridgePerm bool
-	FridgeData fridgeData
-	CleanPerm  bool
+	Date             string
+	SemesterDate     string
+	User             string
+	FridgePerm       bool
+	FridgeData       fridgeData
+	CleanPerm        bool
+	CleanLeaderboard []CleanerPoints
 }
 
 func FridgePerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
@@ -41,6 +49,25 @@ func CleanPerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
 		return false
 	}
 	return true
+}
+
+func SemesterDate() time.Time {
+	now := time.Now()
+	year := now.Year()
+	if now.Month() >= time.January {
+		year -= 1
+	}
+	month := time.Month(8)
+	return time.Date(year, month, 1, 0, 0, 0, 0, now.Location())
+}
+
+func leaderboardData(s *Service) ([]CleanerPoints, error) {
+	date := SemesterDate()
+	pgDate := pgtype.Date{
+		Time:  date,
+		Valid: true,
+	}
+	return getAllCleanersSince(s.db, s.ctx, pgDate)
 }
 
 func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
@@ -80,11 +107,21 @@ func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	cleanLeaderboard, err := leaderboardData(s)
+	if err != nil {
+		slog.Error("Failed to get clean leaderboard data:", err)
+		http.Error(w, "Failed to get clean leaderboard data", http.StatusInternalServerError)
+		return
+	}
+
 	data := adminData{
-		User:       user,
-		FridgePerm: fridgePerm || adminPerm,
-		FridgeData: fridge,
-		CleanPerm:  cleanPerm || adminPerm,
+		Date:             time.Now().Format("2006-01-02"),
+		SemesterDate:     SemesterDate().Format("2006-01-02"),
+		User:             user,
+		FridgePerm:       fridgePerm || adminPerm,
+		FridgeData:       fridge,
+		CleanPerm:        cleanPerm || adminPerm,
+		CleanLeaderboard: cleanLeaderboard,
 	}
 
 	if err := s.t.ExecuteTemplate(w, "admin.html", data); err != nil {
@@ -329,4 +366,251 @@ func (s *Service) updateFridgeItemPriority(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	s.sseEvents <- newItems
+}
+
+func (s *Service) searchSSOusers(w http.ResponseWriter, r *http.Request) {
+	if !(FridgePerms(w, r, s) || CleanPerms(w, r, s)) {
+		return
+	}
+
+	id := r.PathValue("id")
+	name := r.URL.Query().Get("name")
+
+	if name == "" {
+		data := struct {
+			Options []SsoUser
+			Id      string
+		}{
+			Options: []SsoUser{},
+			Id:      id,
+		}
+		if err := s.t.ExecuteTemplate(w, "ssoSearch.html", data); err != nil {
+			slog.Error("Failed to execute template:", err)
+			http.Error(w, "Failed to render search results", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	client := &http.Client{}
+	url := fmt.Sprintf("%s/api/search?query=%s", os.Getenv("SSO_URL"), name)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		slog.Error("Failed to create request:", err)
+		http.Error(w, "Failed to create request", http.StatusInternalServerError)
+		return
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		slog.Error("Failed to make request:", err)
+		http.Error(w, "Failed to make request", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		slog.Error("Unexpected status code:", "status", resp.StatusCode)
+		http.Error(w, "Unexpected status code from SSO", http.StatusInternalServerError)
+		return
+	}
+
+	var users []SsoUser
+	if err := json.NewDecoder(resp.Body).Decode(&users); err != nil {
+		slog.Error("Failed to decode response:", err)
+		http.Error(w, "Failed to decode response from SSO", http.StatusInternalServerError)
+		return
+	}
+
+	slog.Info("SSO search requested", "query", name, "results", users)
+
+	data := struct {
+		Options []SsoUser
+		Id      string
+	}{
+		Options: users,
+		Id:      id,
+	}
+
+	if err := s.t.ExecuteTemplate(w, "ssoSearch.html", data); err != nil {
+		slog.Error("Failed to execute template:", err)
+		http.Error(w, "Failed to render search results", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (s *Service) addCleanPoint(w http.ResponseWriter, r *http.Request) {
+	if !CleanPerms(w, r, s) {
+		return
+	}
+
+	cleanLeaderboard, err := leaderboardData(s)
+
+	if err := r.ParseForm(); err != nil {
+		slog.Error("Failed to parse form:", err)
+		data := struct {
+			Color   string
+			Message string
+			Users   []CleanerPoints
+		}{
+			Color:   "pico-color-red-500",
+			Message: "❌ Något gick fel med att ge poäng",
+			Users:   cleanLeaderboard,
+		}
+		if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+			slog.Error("Failed to execute template:", err)
+		}
+
+		return
+	}
+
+	kthid := r.FormValue("name")
+	dateStr := r.FormValue("date")
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		slog.Error("Failed to parse date:", err)
+		data := struct {
+			Color   string
+			Message string
+			Users   []CleanerPoints
+		}{
+			Color:   "pico-color-red-500",
+			Message: "❌ Ogiltigt datumformat",
+			Users:   cleanLeaderboard,
+		}
+		if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+			slog.Error("Failed to execute template:", err)
+		}
+
+		return
+	}
+	pgDate := pgtype.Date{
+		Time:  date,
+		Valid: true,
+	}
+
+	if err := addCleanPoint(s.db, s.ctx, kthid, pgDate); err != nil {
+		slog.Error("Failed to add clean point:", err)
+		data := struct {
+			Color   string
+			Message string
+			Users   []CleanerPoints
+		}{
+			Color:   "pico-color-red-500",
+			Message: "❌ Något gick fel med att ge poäng",
+			Users:   cleanLeaderboard,
+		}
+		if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+			slog.Error("Failed to execute template:", err)
+		}
+		return
+	}
+
+	slog.Info("Added clean point", "kthid", kthid, "date", dateStr)
+
+	cleanLeaderboard, err = leaderboardData(s)
+
+	data := struct {
+		Color   string
+		Message string
+		Users   []CleanerPoints
+	}{
+		Color:   "pico-color-green-400",
+		Message: "✅ Städ poäng till " + kthid,
+		Users:   cleanLeaderboard,
+	}
+	if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+		slog.Error("Failed to execute template:", err)
+	}
+}
+
+func (s *Service) searchCleanUser(w http.ResponseWriter, r *http.Request) {
+	if !CleanPerms(w, r, s) {
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		slog.Error("Failed to parse form:", err)
+		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+		return
+	}
+
+	kthid := r.FormValue("name")
+	from := r.FormValue("from")
+	to := r.FormValue("to")
+
+	fromDate, err := time.Parse("2006-01-02", from)
+	if err != nil {
+		slog.Error("Failed to parse from date:", err)
+		http.Error(w, "Invalid from date format", http.StatusBadRequest)
+		return
+	}
+
+	toDate, err := time.Parse("2006-01-02", to)
+	if err != nil {
+		slog.Error("Failed to parse to date:", err)
+		http.Error(w, "Invalid to date format", http.StatusBadRequest)
+		return
+	}
+
+	fromPgDate := pgtype.Date{
+		Time:  fromDate,
+		Valid: true,
+	}
+	toPgDate := pgtype.Date{
+		Time:  toDate,
+		Valid: true,
+	}
+
+	slog.Info("Search clean user requested", "kthid", kthid, "from", from, "to", to)
+
+	cleanPoints, err := getCleanPointsByKthid(s.db, s.ctx, kthid, fromPgDate, toPgDate)
+	if err != nil {
+		slog.Error("Failed to get clean points for user:", err)
+		http.Error(w, "Failed to get clean points for user", http.StatusInternalServerError)
+		return
+	}
+
+	data := struct {
+		Dates []string
+		Kthid string
+	}{
+		Kthid: kthid,
+		Dates: []string{},
+	}
+
+	for _, cp := range cleanPoints {
+		data.Dates = append(data.Dates, cp.Time.Format("2006-01-02"))
+	}
+
+	slog.Info("Found clean points for user", "kthid", kthid, "points", data.Dates)
+
+	if err := s.t.ExecuteTemplate(w, "cleanUserList.html", data); err != nil {
+		slog.Error("Failed to execute template:", err)
+	}
+}
+
+func (s *Service) deleteCleanPoint(w http.ResponseWriter, r *http.Request) {
+	if !CleanPerms(w, r, s) {
+		return
+	}
+
+	kthid := r.URL.Query().Get("name")
+	dateStr := r.URL.Query().Get("date")
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		slog.Error("Failed to parse date:", err)
+		http.Error(w, "Invalid date format", http.StatusBadRequest)
+		return
+	}
+	pgDate := pgtype.Date{
+		Time:  date,
+		Valid: true,
+	}
+
+	if err := removeCleanPoint(s.db, s.ctx, kthid, pgDate); err != nil {
+		slog.Error("Failed to remove clean point:", err)
+		http.Error(w, "Failed to remove clean point", http.StatusInternalServerError)
+		return
+	}
+
+	slog.Info("Removed clean point", "kthid", kthid, "date", dateStr)
 }

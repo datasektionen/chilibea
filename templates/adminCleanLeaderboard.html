@@ -1,0 +1,15 @@
+<tbody id="clean-leaderboard">
+    {{range .Users}}
+    <tr>
+        <td>{{.Kthid}}</td>
+        <td>{{.Points}}</td>
+    </tr>
+    {{end}}
+</tbody>
+<p
+    hx-swap-oob="outerHTML:#clean-point-msg"
+    id="clean-point-msg"
+    class="{{.Color}}"
+>
+    {{.Message}}
+</p>
