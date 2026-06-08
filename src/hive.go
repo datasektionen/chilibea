@@ -137,6 +137,10 @@ func getMembersInGroup(group HiveGroup, client *http.Client) ([]Member, error) {
 }
 
 func getSSOUsers(kthids []string) ([]SsoUser, error) {
+	if len(kthids) == 0 {
+		return []SsoUser{}, nil
+	}
+
 	url := fmt.Sprintf("%s/api/users?format=array&picture=thumbnail", os.Getenv("SSO_URL"))
 	for _, id := range kthids {
 		url += fmt.Sprintf("&u=%s", id)
