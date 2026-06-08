@@ -37,8 +37,12 @@ func main() {
 	db, err := pgxpool.New(context.Background(), dbURL)
 	if _, err := db.Exec(context.Background(), `
 		CREATE TYPE fridgeType AS ENUM ('soda', 'snack');
-		CREATE TABLE IF NOT EXISTS sodaFridge (name TEXT PRIMARY KEY, type fridgeType NOT NULL, price FLOAT NOT NULL, priority INT NOT NULL);
+		`); err != nil {
+		slog.Error("Enum type duplicate", err)
+	}
+	if _, err := db.Exec(context.Background(), `
 		CREATE TABLE IF NOT EXISTS cleanPoints (kthid VARCHAR(10), date DATE, PRIMARY KEY (date, kthid));
+		CREATE TABLE IF NOT EXISTS sodaFridge (name TEXT PRIMARY KEY, type fridgeType NOT NULL, price FLOAT NOT NULL, priority INT NOT NULL);
 		`); err != nil {
 		slog.Error("Failed to create tables:", err)
 	}
