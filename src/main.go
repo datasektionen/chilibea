@@ -207,8 +207,6 @@ func (s *Service) mandagsstad(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.Header().Set("Cache-Control", "public, max-age=600")
-
 	if err := s.t.ExecuteTemplate(w, "clean.html", data); err != nil {
 		slog.Error("Failed to execute template", "error", err)
 	}
