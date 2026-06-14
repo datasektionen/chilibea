@@ -207,8 +207,6 @@ func (s *Service) mandagsstad(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	slog.Info("Mandagsstad accessed", "total_users", topUsers, "year_users", topUsersYear, "data_total_users", data.UsersAll, "data_year_users", data.UsersYear)
-
 	if err := s.t.ExecuteTemplate(w, "clean.html", data); err != nil {
 		slog.Error("Failed to execute template", "error", err)
 	}

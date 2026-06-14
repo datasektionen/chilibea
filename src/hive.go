@@ -169,6 +169,10 @@ func getSSOUsers(kthids []string) ([]SsoUser, error) {
 		return nil, err
 	}
 
+	for i := 0; i < len(users); i++ {
+		users[i].KthId = kthids[i]
+	}
+
 	slog.Info("Fetched SSO users", "count", users)
 	return users, nil
 }
