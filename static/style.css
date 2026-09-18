@@ -31,7 +31,7 @@ body {
 }
 
 .main {
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--orange-background);
 }
 
@@ -44,7 +44,6 @@ body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    background-color: var(--orange-background);
     max-height: calc(100vh - 140px);
 }
 
@@ -132,6 +131,7 @@ body {
 .mandagstad {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
+    max-height: revert;
 
     @media (max-width: 920px) {
         grid-template-columns: 1fr;
