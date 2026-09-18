@@ -95,6 +95,44 @@ configs:
           year_tag: D-83
           picture: https://thskth.se/wp-content/uploads/2023/06/ths-logo-bla-01-300x294-1.png
           thumbnail: https://thskth.se/wp-content/uploads/2019/12/ths-logo-svart-01.png
+        - ug_kth_id: yet-another-id
+          kth_id: marmed
+          email: marmed@kth.se
+          first_name: Martin
+          family_name: Median
+          year_tag: ME-99
+        - ug_kth_id: even-more
+          kth_id: karklu
+          email: karklu@kth.se
+          first_name: Karin
+          family_name: Klubbare
+        - ug_kth_id: even-more-2
+          kth_id: mansta
+          email: mansta@kth.se
+          first_name: Måndags
+          family_name: Städ
+        - ug_kth_id: even-more-3
+          kth_id: mansta2
+          email: mansta2@kth.se
+          first_name: Mandags
+          family_name: Stad
+        - ug_kth_id: even-more-4
+          kth_id: metador
+          email: metador@kth.se
+          first_name: Meta
+          family_name: Dor
+        - ug_kth_id: even-more-5
+          kth_id: eaeklof
+          email: eaeklof@kth.se
+          first_name: Eynar Ason
+          family_name: Eklöf
+          year_tag: D-23
+        - ug_kth_id: even-more-6
+          kth_id: shornell
+          email: shornell@kth.se
+          first_name: Samuel Donkey Kong Leif
+          family_name: Hörnell
+          year_tag: D-23
 
       hive:
         keys:
