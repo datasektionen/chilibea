@@ -71,10 +71,7 @@
                         style="min-width: min(70%, 40rem); margin-top: 2rem; padding: 1rem"
                     >
                         {{- range .UsersAll -}}
-                        <div
-                            class="product"
-                            style="display: flex; align-items: center"
-                        >
+                        <div class="product">
                             <img
                                 src="{{.ImgUrl}}"
                                 alt="Profile picture"
@@ -86,7 +83,7 @@
                                     clip-path: circle(50%);
                                 "
                             />
-                            <p>{{.Name}}</p>
+                            <p class="name">{{.Name}}</p>
                             <div class="dots"></div>
                             <p>{{.Points}} städ</p>
                         </div>
@@ -116,10 +113,7 @@
                         style="min-width: min(70%, 40rem); margin-top: 2rem; padding: 1rem"
                     >
                         {{- range .UsersYear -}}
-                        <div
-                            class="product"
-                            style="display: flex; align-items: center"
-                        >
+                        <div class="product">
                             <img
                                 src="{{.ImgUrl}}"
                                 alt="Profile picture"
@@ -131,7 +125,7 @@
                                     clip-path: circle(50%);
                                 "
                             />
-                            <p>{{.Name}}</p>
+                            <p class="name">{{.Name}}</p>
                             <div class="dots"></div>
                             <p>{{.Points}} städ</p>
                         </div>

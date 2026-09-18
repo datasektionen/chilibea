@@ -105,27 +105,37 @@ body {
 }
 
 .product {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
     justify-content: space-between;
+    align-items: baseline;
     align-self: stretch;
     width: 100%;
     max-width: 100%;
     flex-direction: row;
     flex-wrap: nowrap;
-}
 
-.dots {
-    overflow: hidden;
-    width: 100%;
-    border-bottom: 2px dotted var(--primary-text);
-    margin: 0 2px 5px 2px;
-}
+    img {
+        align-self: center;
+    }
 
-.product p {
-    font-size: 2.5vh;
-    line-height: 3vh;
-    flex-shrink: 0;
-    margin-bottom: 0;
+    p {
+        font-size: 2.5vh;
+        line-height: 3vh;
+        flex-shrink: 0;
+        margin-bottom: 0;
+    }
+
+    .name {
+        flex-shrink: 1;
+    }
+
+    .dots {
+        overflow: hidden;
+        width: 1fr;
+        border-bottom: 2px dotted var(--primary-text);
+        margin: 0 2px 5px 2px;
+    }
 }
 
 .mandagstad {
