@@ -1,0 +1,23 @@
+<div
+    class="typesDiv"
+    style="min-width: min(70%, 40rem); margin-top: 2rem; padding: 1rem"
+>
+    {{- range . -}}
+    <div class="product">
+        <img
+            src="{{.ImgUrl}}"
+            alt="Profile picture"
+            style="
+                width: 2.5rem;
+                height: 2.5rem;
+                margin-right: 0.3rem;
+                object-fit: cover;
+                clip-path: circle(50%);
+            "
+        />
+        <p class="name">{{.Name}}</p>
+        <div class="dots"></div>
+        <p>{{.Points}} städ</p>
+    </div>
+    {{- end -}}
+</div>

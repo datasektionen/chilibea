@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="se">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/static/style.css" />
+        <link rel="stylesheet" href="/static/pico.pumpkin.min.css" />
+        <title>Måndagsstäd - METAdorerna</title>
+    </head>
+    <body class="container-flex">
+        <main class="main">
+            <div>
+                <div class="header" style="flex-direction: column">
+                    <img
+                        src="{{.Img1.Src}}"
+                        width="{{.Img1.Width}}"
+                        height="{{.Img1.Height}}"
+                        style="pointer-events: none"
+                    />
+                    <img
+                        src="{{.Img2.Src}}"
+                        width="{{.Img2.Width}}"
+                        height="{{.Img2.Height}}"
+                        style="pointer-events: none"
+                    />
+                </div>
+                {{template "cleanLeaderBoard.html" .Users}}
+            </div>
+        </main>
+    </body>
+</html>

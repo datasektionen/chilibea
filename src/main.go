@@ -70,6 +70,8 @@ func main() {
 	http.HandleFunc("GET /about", s.aboutPage)
 	http.HandleFunc("GET /laskkyl", s.sodaPage)
 	http.HandleFunc("GET /mandagsstad", s.mandagsstad)
+	http.HandleFunc("GET /mandagsstad/all_time", s.mandagsstadAllTime)
+	http.HandleFunc("GET /mandagsstad/year", s.mandagsstadYear)
 	http.HandleFunc("GET /admin", s.adminPage)
 	http.HandleFunc("PUT /admin/fridge/{t}/add", s.addFridgeItem)
 	http.HandleFunc("POST /admin/fridge/{n}/edit", s.editFridgeItem)
@@ -211,6 +213,109 @@ func (s *Service) mandagsstad(w http.ResponseWriter, r *http.Request) {
 		slog.Error("Failed to execute template", "error", err)
 	}
 
+}
+
+type tvImg struct {
+	Src    string
+	Width  int
+	Height int
+}
+
+type cleanTVData struct {
+	Users []struct {
+		Name   string
+		Points int
+		ImgUrl string
+	}
+	Img1 tvImg
+	Img2 tvImg
+}
+
+func buildCleanTVData(topUsers []CleanerPoints, ssoUsers []SsoUser, img1, img2 tvImg) cleanTVData {
+	data := cleanTVData{
+		Users: make([]struct {
+			Name   string
+			Points int
+			ImgUrl string
+		}, len(topUsers)),
+		Img1: img1,
+		Img2: img2,
+	}
+	for i, u := range topUsers {
+		for _, sso := range ssoUsers {
+			if sso.KthId == u.Kthid {
+				data.Users[i].Name = fmt.Sprintf("%s %s", sso.FirstName, sso.FamilyName)
+				data.Users[i].Points = u.Points
+				data.Users[i].ImgUrl = sso.Picture
+				break
+			}
+		}
+	}
+	return data
+}
+
+func (s *Service) mandagsstadAllTime(w http.ResponseWriter, r *http.Request) {
+	topUsers, err := getTop10CleanersWithPoints(s.db, s.ctx)
+	if err != nil {
+		slog.Error("Failed to get top cleaners", "error", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	var kthids []string
+	for _, u := range topUsers {
+		kthids = append(kthids, u.Kthid)
+	}
+
+	ssoUsers, err := getSSOUsers(kthids)
+	if err != nil {
+		slog.Error("Failed to get SSO users", "error", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	data := buildCleanTVData(topUsers, ssoUsers,
+		tvImg{"/static/Mandagsstad-pink.gif", 600, 125},
+		tvImg{"/static/Mandagsstad-all-time.gif", 300, 75},
+	)
+
+	if err := s.t.ExecuteTemplate(w, "cleanTV.html", data); err != nil {
+		slog.Error("Failed to execute template", "error", err)
+	}
+}
+
+func (s *Service) mandagsstadYear(w http.ResponseWriter, r *http.Request) {
+	date := pgtype.Date{
+		Time:  SemesterDate(),
+		Valid: true,
+	}
+	topUsers, err := getTop10CleanersWithPointsSince(s.db, s.ctx, date)
+	if err != nil {
+		slog.Error("Failed to get top cleaners for year", "error", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	var kthids []string
+	for _, u := range topUsers {
+		kthids = append(kthids, u.Kthid)
+	}
+
+	ssoUsers, err := getSSOUsers(kthids)
+	if err != nil {
+		slog.Error("Failed to get SSO users", "error", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	data := buildCleanTVData(topUsers, ssoUsers,
+		tvImg{"/static/Mandagsstad-anim.gif", 360, 75},
+		tvImg{"/static/i-ar.gif", 105, 56},
+	)
+
+	if err := s.t.ExecuteTemplate(w, "cleanTV.html", data); err != nil {
+		slog.Error("Failed to execute template", "error", err)
+	}
 }
 
 func (s *Service) redirectToAbout(w http.ResponseWriter, r *http.Request) {
