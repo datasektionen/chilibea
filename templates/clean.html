@@ -42,7 +42,7 @@
             </header>
         </div>
         <main class="main">
-            <div class="mainDiv">
+            <div class="mainDiv" style="display: grid; grid-template-columns: 1fr 1fr">
                 <button class="fullscreenButton" onclick="toggleFullscreen()">
                     <img
                         src="/static/fullscreen-logo.svg"
@@ -51,88 +51,92 @@
                         height="40"
                     />
                 </button>
-                <div class="header" style="flex-direction: column">
-                    <img
-                        src="/static/Mandagsstad-pink.gif"
-                        width="600"
-                        height="125"
-                        style="pointer-events: none"
-                    />
-                    <img
-                        src="/static/Mandagsstad-all-time.gif"
-                        width="300"
-                        height="75"
-                        style="pointer-events: none"
-                    />
-                </div>
-                <div
-                    class="typesDiv"
-                    style="min-width: min(70%, 40rem); margin-top: 2rem"
-                >
-                    {{- range .UsersAll -}}
+                <div>
+                    <div class="header" style="flex-direction: column">
+                        <img
+                            src="/static/Mandagsstad-pink.gif"
+                            width="600"
+                            height="125"
+                            style="pointer-events: none"
+                        />
+                        <img
+                            src="/static/Mandagsstad-all-time.gif"
+                            width="300"
+                            height="75"
+                            style="pointer-events: none"
+                        />
+                    </div>
                     <div
-                        class="product"
-                        style="display: flex; align-items: center"
+                        class="typesDiv"
+                        style="min-width: min(70%, 40rem); margin-top: 2rem; padding: 1rem"
+                    >
+                        {{- range .UsersAll -}}
+                        <div
+                            class="product"
+                            style="display: flex; align-items: center; margin-top: 2rem"
+                        >
+                            <img
+                                src="{{.ImgUrl}}"
+                                alt="{{.Name}} picture"
+                                style="
+                                    aspect-ratio: 1;
+                                    width: 2.5rem;
+                                    margin-right: 0.3rem;
+                                    object-fit: cover;
+                                    clip-path: circle(50%);
+                                "
+                            />
+                            <p>{{.Name}}</p>
+                            <div class="dots"></div>
+                            <p>{{.Points}} städ</p>
+                        </div>
+                        {{- end -}}
+                    </div>
+                </div>
+                <div>
+                    <div
+                        class="header"
+                        style="flex-direction: column"
                     >
                         <img
-                            src="{{.ImgUrl}}"
-                            alt="{{.Name}} picture"
-                            style="
-                                aspect-ratio: 1;
-                                width: 2.5rem;
-                                margin-right: 0.3rem;
-                                object-fit: cover;
-                                clip-path: circle(50%);
-                            "
+                            src="/static/Mandagsstad-anim.gif"
+                            width="360"
+                            height="75"
+                            style="pointer-events: none"
                         />
-                        <p>{{.Name}}</p>
-                        <div class="dots"></div>
-                        <p>{{.Points}} städ</p>
-                    </div>
-                    {{- end -}}
-                </div>
-                <div
-                    class="header"
-                    style="flex-direction: column; margin-top: 6rem"
-                >
-                    <img
-                        src="/static/Mandagsstad-anim.gif"
-                        width="360"
-                        height="75"
-                        style="pointer-events: none"
-                    />
-                    <img
-                        src="/static/i-ar.gif"
-                        width="105"
-                        height="56"
-                        style="pointer-events: none"
-                    />
-                </div>
-                <div
-                    class="typesDiv"
-                    style="min-width: min(70%, 40rem); margin-top: 2rem"
-                >
-                    {{- range .UsersYear -}}
-                    <div
-                        class="product"
-                        style="display: flex; align-items: center"
-                    >
                         <img
-                            src="{{.ImgUrl}}"
-                            alt=""
-                            style="
-                                aspect-ratio: 1;
-                                width: 2.5rem;
-                                margin-right: 0.3rem;
-                                object-fit: cover;
-                                clip-path: circle(50%);
-                            "
+                            src="/static/i-ar.gif"
+                            width="105"
+                            height="56"
+                            style="pointer-events: none"
                         />
-                        <p>{{.Name}}</p>
-                        <div class="dots"></div>
-                        <p>{{.Points}} städ</p>
                     </div>
-                    {{- end -}}
+                    <div
+                        class="typesDiv"
+                        style="min-width: min(70%, 40rem); margin-top: 2rem; padding: 1rem"
+                    >
+                        {{- range .UsersYear -}}
+                        <div
+                            class="product"
+                            style="display: flex; align-items: center; margin-top: 2rem"
+                        >
+                            <img
+                                src="{{.ImgUrl}}"
+                                alt=""
+                                style="
+                                    aspect-ratio: 1;
+                                    width: 2.5rem;
+                                    margin-right: 0.3rem;
+                                    object-fit: cover;
+                                    clip-path: circle(50%);
+                                "
+                            />
+                            <p>{{.Name}}</p>
+                            <div class="dots"></div>
+                            <p>{{.Points}} städ</p>
+                        </div>
+                        {{- end -}}
+                    </div>
                 </div>
             </div>
         </main>
