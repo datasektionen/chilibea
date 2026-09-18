@@ -131,6 +131,7 @@ body {
 .mandagstad {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
+    align-items: start;
     max-height: revert;
 
     @media (max-width: 920px) {
