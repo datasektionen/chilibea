@@ -301,3 +301,7 @@ nav > :nth-child(2 of ul) {
         flex-direction: column;
     }
 }
+
+.scroll-x-overflow {
+    overflow-x: scroll;
+}
