@@ -53,50 +53,60 @@
                 <p>Här kan du ändra innehållet i läskkylen.</p>
                 <div>
                     <h4>Dricka</h4>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td
-                                    class="drag-handle"
-                                    style="cursor: grab"
-                                ></td>
-                                <td scope="col">Namn</td>
-                                <td scope="col">Pris</td>
-                                <td scope="col"></td>
-                            </tr>
-                        </thead>
-                        <tbody id="soda-table">
-                            {{range .FridgeData.Sodas}}
-                            <tr data-id="{{.Priority}}" data-name="{{.Name}}">
-                                {{template "fridgeItem" .}}
-                            </tr>
-                            {{end}}
-                        </tbody>
-                    </table>
+                    <div class="scroll-x-overflow">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td
+                                        class="drag-handle"
+                                        style="cursor: grab"
+                                    ></td>
+                                    <td scope="col">Namn</td>
+                                    <td scope="col">Pris</td>
+                                    <td scope="col"></td>
+                                </tr>
+                            </thead>
+                            <tbody id="soda-table">
+                                {{range .FridgeData.Sodas}}
+                                <tr
+                                    data-id="{{.Priority}}"
+                                    data-name="{{.Name}}"
+                                >
+                                    {{template "fridgeItem" .}}
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
                     {{template "addForm" "soda"}}
                 </div>
                 <div>
                     <h4>Snacks</h4>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td
-                                    class="drag-handle"
-                                    style="cursor: grab"
-                                ></td>
-                                <td scope="col">Namn</td>
-                                <td scope="col">Pris</td>
-                                <td scope="col"></td>
-                            </tr>
-                        </thead>
-                        <tbody id="snack-table">
-                            {{range .FridgeData.Snacks}}
-                            <tr data-id="{{.Priority}}" data-name="{{.Name}}">
-                                {{template "fridgeItem" .}}
-                            </tr>
-                            {{end}}
-                        </tbody>
-                    </table>
+                    <div class="scroll-x-overflow">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td
+                                        class="drag-handle"
+                                        style="cursor: grab"
+                                    ></td>
+                                    <td scope="col">Namn</td>
+                                    <td scope="col">Pris</td>
+                                    <td scope="col"></td>
+                                </tr>
+                            </thead>
+                            <tbody id="snack-table">
+                                {{range .FridgeData.Snacks}}
+                                <tr
+                                    data-id="{{.Priority}}"
+                                    data-name="{{.Name}}"
+                                >
+                                    {{template "fridgeItem" .}}
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
                     {{template "addForm" "snack"}}
                 </div>
             </article>
@@ -115,23 +125,30 @@
                         hx-target="#clean-leaderboard"
                         hx-swap="outerHTML"
                     >
-                        <fieldset role="group">
-                            <input
-                                id="clean-name"
-                                type="text"
-                                placeholder="Namn"
-                                name="name"
-                                list="sso-search-users-main"
-                                hx-get="/admin/cleaning/search/main"
-                                hx-trigger="keyup changed delay:500ms"
-                                hx-target="#sso-search-users-main"
-                                hx-swap="outerHTML"
-                            />
-                            <datalist id="sso-search-users-main"></datalist>
-                            <input type="date" name="date" value="{{.Date}}" />
+                        <div class="scroll-x-overflow">
+                            <fieldset role="group">
+                                <input
+                                    id="clean-name"
+                                    type="text"
+                                    placeholder="Namn"
+                                    name="name"
+                                    list="sso-search-users-main"
+                                    style="min-width: 15ch"
+                                    hx-get="/admin/cleaning/search/main"
+                                    hx-trigger="keyup changed delay:500ms"
+                                    hx-target="#sso-search-users-main"
+                                    hx-swap="outerHTML"
+                                />
+                                <datalist id="sso-search-users-main"></datalist>
+                                <input
+                                    type="date"
+                                    name="date"
+                                    value="{{.Date}}"
+                                />
 
-                            <input type="submit" value="Ge poäng" />
-                        </fieldset>
+                                <input type="submit" value="Ge poäng" />
+                            </fieldset>
+                        </div>
                     </form>
                     <p id="clean-point-msg"></p>
                 </article>
@@ -143,29 +160,41 @@
                         hx-target="#clean-user-list"
                         hx-swap="outerHTML"
                     >
-                        <fieldset role="group">
-                            <input
-                                id="search-name"
-                                type="text"
-                                placeholder="Namn"
-                                name="name"
-                                list="sso-search-users-clean"
-                                hx-get="/admin/cleaning/search/clean"
-                                hx-trigger="keyup changed delay:500ms"
-                                hx-target="#sso-search-users-clean"
-                                hx-swap="outerHTML"
-                            />
-                            <datalist id="sso-search-users-clean"></datalist>
-                            <input
-                                type="date"
-                                name="from"
-                                value="{{.SemesterDate}}"
-                            />
-                            <input type="date" name="to" value="{{.Date}}" />
-                            <input type="submit" value="Sök" />
-                        </fieldset>
+                        <div class="scroll-x-overflow">
+                            <fieldset role="group">
+                                <input
+                                    id="search-name"
+                                    type="text"
+                                    placeholder="Namn"
+                                    name="name"
+                                    list="sso-search-users-clean"
+                                    style="min-width: 15ch"
+                                    hx-get="/admin/cleaning/search/clean"
+                                    hx-trigger="keyup changed delay:500ms"
+                                    hx-target="#sso-search-users-clean"
+                                    hx-swap="outerHTML"
+                                />
+                                <datalist
+                                    id="sso-search-users-clean"
+                                ></datalist>
+                                <input
+                                    type="date"
+                                    name="from"
+                                    value="{{.SemesterDate}}"
+                                />
+                                <input
+                                    type="date"
+                                    name="to"
+                                    value="{{.Date}}"
+                                />
+                                <input type="submit" value="Sök" />
+                            </fieldset>
+                        </div>
                     </form>
-                    <div style="max-height: 30rem; overflow-y: scroll">
+                    <div
+                        class="scroll-x-overflow"
+                        style="max-height: 30rem; overflow-y: scroll"
+                    >
                         <table>
                             <thead>
                                 <tr>
@@ -179,22 +208,24 @@
                 </article>
                 <article>
                     <h4>Städlista (Läsåret)</h4>
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Namn</td>
-                                <td>Poäng</td>
-                            </tr>
-                        </thead>
-                        <tbody id="clean-leaderboard">
-                            {{range .CleanLeaderboard}}
-                            <tr>
-                                <td>{{.Kthid}}</td>
-                                <td>{{.Points}}</td>
-                            </tr>
-                            {{end}}
-                        </tbody>
-                    </table>
+                    <div class="scroll-x-overflow">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>Namn</td>
+                                    <td>Poäng</td>
+                                </tr>
+                            </thead>
+                            <tbody id="clean-leaderboard">
+                                {{range .CleanLeaderboard}}
+                                <tr>
+                                    <td>{{.Kthid}}</td>
+                                    <td>{{.Points}}</td>
+                                </tr>
+                                {{end}}
+                            </tbody>
+                        </table>
+                    </div>
                 </article>
             </div>
             {{ end }}

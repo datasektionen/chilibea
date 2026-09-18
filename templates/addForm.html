@@ -5,10 +5,23 @@
     hx-swap="beforeend"
     hx-target="#{{.}}-table"
 >
-    <fieldset role="group">
-        <input type="text" placeholder="Namn" name="name" />
-        <input type="number" placeholder="Pris" name="price" step="0.01" />
-        <input type="submit" value="Lägg till" />
-    </fieldset>
+    <div class="scroll-x-overflow">
+        <fieldset role="group">
+            <input
+                type="text"
+                placeholder="Namn"
+                name="name"
+                style="min-width: 15ch"
+            />
+            <input
+                type="number"
+                placeholder="Pris"
+                name="price"
+                step="0.01"
+                style="min-width: 15ch"
+            />
+            <input type="submit" value="Lägg till" />
+        </fieldset>
+    </div>
 </form>
 {{end}}
