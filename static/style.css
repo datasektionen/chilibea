@@ -129,6 +129,15 @@ body {
     margin-bottom: 0;
 }
 
+.mandagstad {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+
+    @media (max-width: 920px) {
+        grid-template-columns: 1fr;
+    }
+}
+
 .minstaKopDiv {
     display: flex;
     gap: 0.7rem;
