@@ -54,7 +54,7 @@ func CleanPerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
 func SemesterDate() time.Time {
 	now := time.Now()
 	year := now.Year()
-	if now.Month() >= time.January {
+	if now.Month() >= time.January && now.Month() <= time.August {
 		year -= 1
 	}
 	month := time.Month(8)
@@ -135,7 +135,7 @@ func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := r.ParseForm(); err != nil {
-		slog.Error("Failed to parse form:", err)
+		slog.Error("Failed to parse form:", "error", err)
 		http.Error(w, "Failed to parse form", http.StatusBadRequest)
 		return
 	}
