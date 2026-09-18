@@ -56,6 +56,10 @@ body {
     max-height: 140px;
 }
 
+nav > :nth-child(2 of ul) {
+    overflow-x: scroll;
+}
+
 .fullscreenButton {
     position: absolute;
     z-index: 10;
