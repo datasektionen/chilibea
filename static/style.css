@@ -93,6 +93,7 @@ nav > :nth-child(2 of ul) {
     flex-direction: column;
     row-gap: 0.5rem;
     overflow-x: scroll;
+    max-width: 60ch;
 }
 
 .typesDiv:nth-last-child(1):nth-child(odd) {
@@ -153,6 +154,13 @@ nav > :nth-child(2 of ul) {
     grid-template-columns: 1fr 1fr;
     align-items: start;
     max-height: revert;
+    justify-items: stretch;
+
+    & > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
     @media (max-width: 57.5rem) {
         grid-template-columns: 1fr;
