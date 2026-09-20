@@ -13,14 +13,14 @@ body {
 }
 
 .size-6 {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     margin: auto;
 }
 
 .size-8 {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     margin: auto;
 }
 
@@ -44,7 +44,7 @@ body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    max-height: calc(100vh - 140px);
+    max-height: calc(100vh - 8.75rem);
 }
 
 .header {
@@ -53,7 +53,7 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-height: 140px;
+    height: 8.75rem;
 }
 
 nav > :nth-child(2 of ul) {
@@ -63,8 +63,8 @@ nav > :nth-child(2 of ul) {
 .fullscreenButton {
     position: absolute;
     z-index: 10;
-    top: 10px;
-    right: 10px;
+    top: 0.625rem;
+    right: 0.625rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -76,14 +76,14 @@ nav > :nth-child(2 of ul) {
     width: 100%;
     justify-content: center;
     flex-direction: column;
-    border-radius: 10px;
-    padding: 0 30px;
+    border-radius: 0.625rem;
+    padding: 0 1.875rem;
     margin-bottom: 2rem;
 
-    column-gap: 30px;
-    row-gap: 40px;
+    column-gap: 1.875rem;
+    row-gap: 2.5rem;
 
-    @media (min-width: 768px) {
+    @media (min-width: 48rem) {
         grid-template-columns: repeat(2, 1fr);
     }
 }
@@ -91,7 +91,8 @@ nav > :nth-child(2 of ul) {
 .typesDiv {
     display: flex;
     flex-direction: column;
-    row-gap: 8px;
+    row-gap: 0.5rem;
+    overflow-x: scroll;
 }
 
 .typesDiv:nth-last-child(1):nth-child(odd) {
@@ -109,18 +110,22 @@ nav > :nth-child(2 of ul) {
 }
 
 .product {
-    display: grid;
-    grid-template-columns: auto auto 1fr auto;
-    justify-content: space-between;
+    display: flex;
     align-items: baseline;
     align-self: stretch;
-    width: 100%;
-    max-width: 100%;
     flex-direction: row;
     flex-wrap: nowrap;
 
-    img {
+    img,
+    .line {
         align-self: center;
+    }
+
+    .line {
+        display: flex;
+        justify-content: stretch;
+        align-items: baseline;
+        width: 100%;
     }
 
     p {
@@ -137,8 +142,9 @@ nav > :nth-child(2 of ul) {
     .dots {
         overflow: hidden;
         width: 1fr;
-        border-bottom: 2px dotted var(--primary-text);
-        margin: 0 2px 5px 2px;
+        border-bottom: 0.125rem dotted var(--primary-text);
+        margin: 0 0.125rem 0.3125rem 0.125rem;
+        flex-grow: 1;
     }
 }
 
@@ -148,7 +154,7 @@ nav > :nth-child(2 of ul) {
     align-items: start;
     max-height: revert;
 
-    @media (max-width: 920px) {
+    @media (max-width: 57.5rem) {
         grid-template-columns: 1fr;
     }
 }
@@ -196,15 +202,15 @@ nav > :nth-child(2 of ul) {
 }
 
 .footer {
-    height: 140px;
+    height: 8.75rem;
     bottom: 0;
     width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
     background-color: rgb(0, 0, 0, 0.5);
-    border-radius: 0 0 10px 10px;
-    padding: 10px 0;
+    border-radius: 0 0 0.625rem 0.625rem;
+    padding: 0.625rem 0;
 }
 .seeYou {
     filter: invert(0);
@@ -218,7 +224,7 @@ nav > :nth-child(2 of ul) {
     display: grid;
     grid-template-columns: 1fr 3fr;
 
-    @media (max-width: 1024px) {
+    @media (max-width: 64rem) {
         display: flex;
         flex-direction: column;
     }
@@ -246,7 +252,7 @@ nav > :nth-child(2 of ul) {
     grid-template-columns: 3fr 3fr;
     gap: 2rem;
 
-    @media (max-width: 1024px) {
+    @media (max-width: 64rem) {
         display: flex;
         flex-direction: column;
     }
@@ -262,7 +268,7 @@ nav > :nth-child(2 of ul) {
 
 .split img {
     width: 80%;
-    max-width: 400px;
+    max-width: 25rem;
     border-radius: 0.25rem;
 }
 
@@ -274,15 +280,15 @@ nav > :nth-child(2 of ul) {
 }
 
 .memberSlot img {
-    width: 150px;
-    height: 150px;
+    width: 9.375rem;
+    height: 9.375rem;
     object-fit: cover;
     clip-path: circle(50%);
 }
 
 .memberSlot h4 {
     text-align: center;
-    max-width: 175px;
+    max-width: 10.9375rem;
 }
 
 .memberSlot p {
@@ -296,7 +302,7 @@ nav > :nth-child(2 of ul) {
     justify-content: space-evenly;
     gap: 2rem;
 
-    @media (max-width: 768px) {
+    @media (max-width: 48rem) {
         display: flex;
         flex-direction: column;
     }
