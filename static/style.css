@@ -50,10 +50,16 @@ body {
 .header {
     z-index: 2;
     display: flex;
-    justify-content: center;
+    justify-content: stretch;
     align-items: center;
     width: 100%;
     height: 8.75rem;
+
+    & > img {
+        flex-grow: attr(height type(*));
+        width: auto;
+        height: attr(height px);
+    }
 }
 
 nav > :nth-child(2 of ul) {
