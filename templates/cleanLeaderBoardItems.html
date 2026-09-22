@@ -1,0 +1,21 @@
+{{- range . -}}
+<div class="product">
+    <img
+        src="{{.ImgUrl}}"
+        alt="Profile picture"
+        style="
+            width: 2.2em;
+            height: 2.2em;
+            margin-right: 0.3em;
+            object-fit: cover;
+            clip-path: circle(50%);
+            background-color: white;
+        "
+    />
+    <span class="line">
+        <p class="name">{{.Name}}</p>
+        <div class="dots"></div>
+        <p>{{.Points}} städ</p>
+    </span>
+</div>
+{{- end -}}

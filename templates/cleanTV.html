@@ -10,7 +10,12 @@
     <body class="container-flex">
         <main
             class="main"
-            style="display: flex; flex-direction: column; align-items: center"
+            style="
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding-inline: 4rem;
+            "
         >
             <div class="header" style="flex-direction: column; height: 14rem">
                 <img
@@ -26,7 +31,7 @@
                     style="pointer-events: none"
                 />
             </div>
-            {{template "cleanLeaderBoard.html" .Users}}
+            {{template "cleanLeaderBoardTwoColumns.html" .Users}}
         </main>
     </body>
 </html>

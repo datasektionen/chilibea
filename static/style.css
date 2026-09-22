@@ -101,6 +101,7 @@ nav > :nth-child(2 of ul) {
     row-gap: 0.5rem;
     overflow-x: auto;
     max-width: 60ch;
+    font-size: 1.2rem;
 }
 
 .typesDiv:nth-last-child(1):nth-child(odd) {
@@ -137,7 +138,6 @@ nav > :nth-child(2 of ul) {
     }
 
     p {
-        font-size: 1.2rem;
         line-height: 120%;
         flex-shrink: 0;
         margin-bottom: 0;
@@ -154,6 +154,16 @@ nav > :nth-child(2 of ul) {
         margin: 0 0.125rem 0.3125rem 0.125rem;
         flex-grow: 1;
     }
+}
+
+.twoColumnsLeaderBoard {
+    display: grid;
+    grid-template: repeat(5, auto) / 1fr 1fr;
+    grid-auto-flow: column;
+    gap: 0.5em 2em;
+    width: 100%;
+    line-height: 1.2em;
+    font-size: 1.8rem;
 }
 
 .mandagstad {
