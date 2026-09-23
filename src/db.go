@@ -117,17 +117,17 @@ func deleteFridgeItem(db *pgxpool.Pool, ctx context.Context, name string) error 
 	return err
 }
 
-func addCleanPoint(db *pgxpool.Pool, ctx context.Context, kthid string, date pgtype.Date) error {
+func addCleaningPoint(db *pgxpool.Pool, ctx context.Context, kthid string, date pgtype.Date) error {
 	_, err := db.Exec(ctx, "INSERT INTO cleanPoints (kthid, date) VALUES ($1, $2)", kthid, date)
 	return err
 }
 
-func removeCleanPoint(db *pgxpool.Pool, ctx context.Context, kthid string, date pgtype.Date) error {
+func removeCleaningPoint(db *pgxpool.Pool, ctx context.Context, kthid string, date pgtype.Date) error {
 	_, err := db.Exec(ctx, "DELETE FROM cleanPoints WHERE kthid = $1 AND date = $2", kthid, date)
 	return err
 }
 
-func getCleanPointsByDay(db *pgxpool.Pool, ctx context.Context, date pgtype.Date) ([]string, error) {
+func getCleaningPointsByDay(db *pgxpool.Pool, ctx context.Context, date pgtype.Date) ([]string, error) {
 	rows, err := db.Query(ctx, "SELECT kthid FROM cleanPoints WHERE date = $1", date)
 	if err != nil {
 		return nil, err
@@ -138,7 +138,7 @@ func getCleanPointsByDay(db *pgxpool.Pool, ctx context.Context, date pgtype.Date
 	for rows.Next() {
 		var kthid string
 		if err := rows.Scan(&kthid); err != nil {
-			slog.Error("Failed to scan clean point:", err)
+			slog.Error("Failed to scan cleaning point:", err)
 			continue
 		}
 		kthids = append(kthids, kthid)
@@ -147,8 +147,8 @@ func getCleanPointsByDay(db *pgxpool.Pool, ctx context.Context, date pgtype.Date
 	return kthids, nil
 }
 
-func getCleanPointsByKthid(db *pgxpool.Pool, ctx context.Context, kthid string, from pgtype.Date, to pgtype.Date) ([]pgtype.Date, error) {
-	slog.Info("Getting clean points for kthid", "kthid", kthid, "from", from, "to", to)
+func getCleaningPointsByKthid(db *pgxpool.Pool, ctx context.Context, kthid string, from pgtype.Date, to pgtype.Date) ([]pgtype.Date, error) {
+	slog.Info("Getting cleaning points for kthid", "kthid", kthid, "from", from, "to", to)
 	rows, err := db.Query(ctx, "SELECT date FROM cleanPoints WHERE kthid = $1 AND date >= $2 AND date <= $3", kthid, from, to)
 	if err != nil {
 		return nil, err
@@ -159,7 +159,7 @@ func getCleanPointsByKthid(db *pgxpool.Pool, ctx context.Context, kthid string, 
 	for rows.Next() {
 		var date pgtype.Date
 		if err := rows.Scan(&date); err != nil {
-			slog.Error("Failed to scan clean point:", err)
+			slog.Error("Failed to scan cleaning point:", err)
 			continue
 		}
 		dates = append(dates, date)

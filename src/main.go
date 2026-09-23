@@ -81,9 +81,9 @@ func main() {
 	http.HandleFunc("POST /admin/fridge/{n}/save", s.saveFridgeItemEdit)
 	http.HandleFunc("POST /admin/fridge/priority", s.updateFridgeItemPriority)
 	http.HandleFunc("GET /admin/cleaning/search/{id}", s.searchSSOusers)
-	http.HandleFunc("PUT /admin/cleaning/point", s.addCleanPoint)
-	http.HandleFunc("GET /admin/cleaning/user", s.searchCleanUser)
-	http.HandleFunc("DELETE /admin/cleaning/point", s.deleteCleanPoint)
+	http.HandleFunc("PUT /admin/cleaning/point", s.addCleaningPoint)
+	http.HandleFunc("GET /admin/cleaning/user", s.searchCleaningUser)
+	http.HandleFunc("DELETE /admin/cleaning/point", s.deleteCleaningPoint)
 	http.HandleFunc("GET /sse/fridge", s.sseFridge)
 	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("GET /oidc/callback", s.HandleOAuth2)
@@ -209,7 +209,7 @@ func (s *Service) mandagsstad(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if err := s.t.ExecuteTemplate(w, "clean.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "cleaning.html", data); err != nil {
 		slog.Error("Failed to execute template", "error", err)
 	}
 
@@ -221,7 +221,7 @@ type tvImg struct {
 	Height int
 }
 
-type cleanTVData struct {
+type cleaningTVData struct {
 	Users []struct {
 		Name   string
 		Points int
@@ -231,8 +231,8 @@ type cleanTVData struct {
 	Img2 tvImg
 }
 
-func buildCleanTVData(topUsers []CleanerPoints, ssoUsers []SsoUser, img1, img2 tvImg) cleanTVData {
-	data := cleanTVData{
+func buildCleaningTVData(topUsers []CleanerPoints, ssoUsers []SsoUser, img1, img2 tvImg) cleaningTVData {
+	data := cleaningTVData{
 		Users: make([]struct {
 			Name   string
 			Points int
@@ -274,12 +274,12 @@ func (s *Service) mandagsstadAllTime(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := buildCleanTVData(topUsers, ssoUsers,
+	data := buildCleaningTVData(topUsers, ssoUsers,
 		tvImg{"/static/Mandagsstad-pink.gif", 600, 125},
 		tvImg{"/static/Mandagsstad-all-time.gif", 300, 75},
 	)
 
-	if err := s.t.ExecuteTemplate(w, "cleanTV.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "cleaningTV.html", data); err != nil {
 		slog.Error("Failed to execute template", "error", err)
 	}
 }
@@ -308,12 +308,12 @@ func (s *Service) mandagsstadYear(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := buildCleanTVData(topUsers, ssoUsers,
+	data := buildCleaningTVData(topUsers, ssoUsers,
 		tvImg{"/static/Mandagsstad-anim.gif", 360, 75},
 		tvImg{"/static/i-ar.gif", 105, 56},
 	)
 
-	if err := s.t.ExecuteTemplate(w, "cleanTV.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "cleaningTV.html", data); err != nil {
 		slog.Error("Failed to execute template", "error", err)
 	}
 }

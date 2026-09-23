@@ -14,13 +14,13 @@ import (
 )
 
 type adminData struct {
-	Date             string
-	SemesterDate     string
-	User             string
-	FridgePerm       bool
-	FridgeData       fridgeData
-	CleanPerm        bool
-	CleanLeaderboard []CleanerPoints
+	Date                string
+	SemesterDate        string
+	User                string
+	FridgePerm          bool
+	FridgeData          fridgeData
+	CleaningPerm        bool
+	CleaningLeaderboard []CleanerPoints
 }
 
 func FridgePerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
@@ -37,7 +37,7 @@ func FridgePerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
 	return true
 }
 
-func CleanPerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
+func CleaningPerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
 	_, perms, err := Auth(w, r, s.oauth2Config)
 	if err != nil {
 		slog.Error("Authentication error:", err)
@@ -77,11 +77,11 @@ func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Authentication error", http.StatusInternalServerError)
 		return
 	}
-	cleanPerm := HasPermission(perms, "clean")
+	cleaningPerm := HasPermission(perms, "clean")
 	fridgePerm := HasPermission(perms, "fridge")
 	adminPerm := HasPermission(perms, "admin")
 
-	if !(adminPerm || fridgePerm || cleanPerm) {
+	if !(adminPerm || fridgePerm || cleaningPerm) {
 		http.Redirect(w, r, "/about", http.StatusSeeOther)
 		return
 	}
@@ -107,21 +107,21 @@ func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	cleanLeaderboard, err := leaderboardData(s)
+	cleaningLeaderboard, err := leaderboardData(s)
 	if err != nil {
-		slog.Error("Failed to get clean leaderboard data:", err)
-		http.Error(w, "Failed to get clean leaderboard data", http.StatusInternalServerError)
+		slog.Error("Failed to get cleaning leaderboard data:", err)
+		http.Error(w, "Failed to get cleaning leaderboard data", http.StatusInternalServerError)
 		return
 	}
 
 	data := adminData{
-		Date:             time.Now().Format("2006-01-02"),
-		SemesterDate:     SemesterDate().Format("2006-01-02"),
-		User:             user,
-		FridgePerm:       fridgePerm || adminPerm,
-		FridgeData:       fridge,
-		CleanPerm:        cleanPerm || adminPerm,
-		CleanLeaderboard: cleanLeaderboard,
+		Date:                time.Now().Format("2006-01-02"),
+		SemesterDate:        SemesterDate().Format("2006-01-02"),
+		User:                user,
+		FridgePerm:          fridgePerm || adminPerm,
+		FridgeData:          fridge,
+		CleaningPerm:        cleaningPerm || adminPerm,
+		CleaningLeaderboard: cleaningLeaderboard,
 	}
 
 	if err := s.t.ExecuteTemplate(w, "admin.html", data); err != nil {
@@ -369,7 +369,7 @@ func (s *Service) updateFridgeItemPriority(w http.ResponseWriter, r *http.Reques
 }
 
 func (s *Service) searchSSOusers(w http.ResponseWriter, r *http.Request) {
-	if !(FridgePerms(w, r, s) || CleanPerms(w, r, s)) {
+	if !(FridgePerms(w, r, s) || CleaningPerms(w, r, s)) {
 		return
 	}
 
@@ -437,12 +437,12 @@ func (s *Service) searchSSOusers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *Service) addCleanPoint(w http.ResponseWriter, r *http.Request) {
-	if !CleanPerms(w, r, s) {
+func (s *Service) addCleaningPoint(w http.ResponseWriter, r *http.Request) {
+	if !CleaningPerms(w, r, s) {
 		return
 	}
 
-	cleanLeaderboard, err := leaderboardData(s)
+	cleaningLeaderboard, err := leaderboardData(s)
 
 	if err := r.ParseForm(); err != nil {
 		slog.Error("Failed to parse form:", err)
@@ -453,9 +453,9 @@ func (s *Service) addCleanPoint(w http.ResponseWriter, r *http.Request) {
 		}{
 			Color:   "pico-color-red-500",
 			Message: "❌ Något gick fel med att ge poäng",
-			Users:   cleanLeaderboard,
+			Users:   cleaningLeaderboard,
 		}
-		if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+		if err := s.t.ExecuteTemplate(w, "adminCleaningLeaderboard.html", data); err != nil {
 			slog.Error("Failed to execute template:", err)
 		}
 
@@ -474,9 +474,9 @@ func (s *Service) addCleanPoint(w http.ResponseWriter, r *http.Request) {
 		}{
 			Color:   "pico-color-red-500",
 			Message: "❌ Ogiltigt datumformat",
-			Users:   cleanLeaderboard,
+			Users:   cleaningLeaderboard,
 		}
-		if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+		if err := s.t.ExecuteTemplate(w, "adminCleaningLeaderboard.html", data); err != nil {
 			slog.Error("Failed to execute template:", err)
 		}
 
@@ -487,8 +487,8 @@ func (s *Service) addCleanPoint(w http.ResponseWriter, r *http.Request) {
 		Valid: true,
 	}
 
-	if err := addCleanPoint(s.db, s.ctx, kthid, pgDate); err != nil {
-		slog.Error("Failed to add clean point:", err)
+	if err := addCleaningPoint(s.db, s.ctx, kthid, pgDate); err != nil {
+		slog.Error("Failed to add cleaning point:", err)
 		data := struct {
 			Color   string
 			Message string
@@ -496,17 +496,17 @@ func (s *Service) addCleanPoint(w http.ResponseWriter, r *http.Request) {
 		}{
 			Color:   "pico-color-red-500",
 			Message: "❌ Något gick fel med att ge poäng",
-			Users:   cleanLeaderboard,
+			Users:   cleaningLeaderboard,
 		}
-		if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+		if err := s.t.ExecuteTemplate(w, "adminCleaningLeaderboard.html", data); err != nil {
 			slog.Error("Failed to execute template:", err)
 		}
 		return
 	}
 
-	slog.Info("Added clean point", "kthid", kthid, "date", dateStr)
+	slog.Info("Added cleaning point", "kthid", kthid, "date", dateStr)
 
-	cleanLeaderboard, err = leaderboardData(s)
+	cleaningLeaderboard, err = leaderboardData(s)
 
 	data := struct {
 		Color   string
@@ -515,15 +515,15 @@ func (s *Service) addCleanPoint(w http.ResponseWriter, r *http.Request) {
 	}{
 		Color:   "pico-color-green-400",
 		Message: "✅ Städ poäng till " + kthid,
-		Users:   cleanLeaderboard,
+		Users:   cleaningLeaderboard,
 	}
-	if err := s.t.ExecuteTemplate(w, "adminCleanLeaderboard.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "adminCleaningLeaderboard.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
 	}
 }
 
-func (s *Service) searchCleanUser(w http.ResponseWriter, r *http.Request) {
-	if !CleanPerms(w, r, s) {
+func (s *Service) searchCleaningUser(w http.ResponseWriter, r *http.Request) {
+	if !CleaningPerms(w, r, s) {
 		return
 	}
 
@@ -560,12 +560,12 @@ func (s *Service) searchCleanUser(w http.ResponseWriter, r *http.Request) {
 		Valid: true,
 	}
 
-	slog.Info("Search clean user requested", "kthid", kthid, "from", from, "to", to)
+	slog.Info("Search cleaning user requested", "kthid", kthid, "from", from, "to", to)
 
-	cleanPoints, err := getCleanPointsByKthid(s.db, s.ctx, kthid, fromPgDate, toPgDate)
+	cleaningPoints, err := getCleaningPointsByKthid(s.db, s.ctx, kthid, fromPgDate, toPgDate)
 	if err != nil {
-		slog.Error("Failed to get clean points for user:", err)
-		http.Error(w, "Failed to get clean points for user", http.StatusInternalServerError)
+		slog.Error("Failed to get cleaning points for user:", err)
+		http.Error(w, "Failed to get cleaning points for user", http.StatusInternalServerError)
 		return
 	}
 
@@ -577,19 +577,19 @@ func (s *Service) searchCleanUser(w http.ResponseWriter, r *http.Request) {
 		Dates: []string{},
 	}
 
-	for _, cp := range cleanPoints {
+	for _, cp := range cleaningPoints {
 		data.Dates = append(data.Dates, cp.Time.Format("2006-01-02"))
 	}
 
-	slog.Info("Found clean points for user", "kthid", kthid, "points", data.Dates)
+	slog.Info("Found cleaning points for user", "kthid", kthid, "points", data.Dates)
 
-	if err := s.t.ExecuteTemplate(w, "cleanUserList.html", data); err != nil {
+	if err := s.t.ExecuteTemplate(w, "cleaningUserList.html", data); err != nil {
 		slog.Error("Failed to execute template:", err)
 	}
 }
 
-func (s *Service) deleteCleanPoint(w http.ResponseWriter, r *http.Request) {
-	if !CleanPerms(w, r, s) {
+func (s *Service) deleteCleaningPoint(w http.ResponseWriter, r *http.Request) {
+	if !CleaningPerms(w, r, s) {
 		return
 	}
 
@@ -606,11 +606,11 @@ func (s *Service) deleteCleanPoint(w http.ResponseWriter, r *http.Request) {
 		Valid: true,
 	}
 
-	if err := removeCleanPoint(s.db, s.ctx, kthid, pgDate); err != nil {
-		slog.Error("Failed to remove clean point:", err)
-		http.Error(w, "Failed to remove clean point", http.StatusInternalServerError)
+	if err := removeCleaningPoint(s.db, s.ctx, kthid, pgDate); err != nil {
+		slog.Error("Failed to remove cleaning point:", err)
+		http.Error(w, "Failed to remove cleaning point", http.StatusInternalServerError)
 		return
 	}
 
-	slog.Info("Removed clean point", "kthid", kthid, "date", dateStr)
+	slog.Info("Removed cleaning point", "kthid", kthid, "date", dateStr)
 }

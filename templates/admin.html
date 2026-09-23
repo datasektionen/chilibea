@@ -110,7 +110,7 @@
                     {{template "addForm" "snack"}}
                 </div>
             </article>
-            {{ end }} {{ if .CleanPerm }}
+            {{ end }} {{ if .CleaningPerm }}
             <div>
                 <h3>Städning</h3>
                 <p>Här kan du ändra inställningar för städning.</p>
@@ -122,13 +122,13 @@
                     </p>
                     <form
                         hx-put="/admin/cleaning/point"
-                        hx-target="#clean-leaderboard"
+                        hx-target="#cleaning-leaderboard"
                         hx-swap="outerHTML"
                     >
                         <div class="scroll-x-overflow">
                             <fieldset role="group">
                                 <input
-                                    id="clean-name"
+                                    id="cleaning-name"
                                     type="text"
                                     placeholder="Namn"
                                     name="name"
@@ -150,14 +150,14 @@
                             </fieldset>
                         </div>
                     </form>
-                    <p id="clean-point-msg"></p>
+                    <p id="cleaning-point-msg"></p>
                 </article>
                 <article>
                     <h4>Sök upp person</h4>
                     <p>Kolla upp en persons poäng, med ett intervall.</p>
                     <form
                         hx-get="/admin/cleaning/user"
-                        hx-target="#clean-user-list"
+                        hx-target="#cleaning-user-list"
                         hx-swap="outerHTML"
                     >
                         <div class="scroll-x-overflow">
@@ -167,15 +167,15 @@
                                     type="text"
                                     placeholder="Namn"
                                     name="name"
-                                    list="sso-search-users-clean"
+                                    list="sso-search-users-cleaning"
                                     style="min-width: 15ch"
-                                    hx-get="/admin/cleaning/search/clean"
+                                    hx-get="/admin/cleaning/search/cleaning"
                                     hx-trigger="keyup changed delay:500ms"
-                                    hx-target="#sso-search-users-clean"
+                                    hx-target="#sso-search-users-cleaning"
                                     hx-swap="outerHTML"
                                 />
                                 <datalist
-                                    id="sso-search-users-clean"
+                                    id="sso-search-users-cleaning"
                                 ></datalist>
                                 <input
                                     type="date"
@@ -202,7 +202,7 @@
                                     <td>Tabort</td>
                                 </tr>
                             </thead>
-                            <tbody id="clean-user-list"></tbody>
+                            <tbody id="cleaning-user-list"></tbody>
                         </table>
                     </div>
                 </article>
@@ -216,8 +216,8 @@
                                     <td>Poäng</td>
                                 </tr>
                             </thead>
-                            <tbody id="clean-leaderboard">
-                                {{range .CleanLeaderboard}}
+                            <tbody id="cleaning-leaderboard">
+                                {{range .CleaningLeaderboard}}
                                 <tr>
                                     <td>{{.Kthid}}</td>
                                     <td>{{.Points}}</td>
