@@ -161,3 +161,14 @@ configs:
             permissions:
               - id: admin
             description: "Matrix YOOOO"
+          - name: clean
+            id: clean
+            domain: example.com
+            tags:
+              - id: internal
+            members:
+              - eaeklof
+              - eaeklof
+            permissions:
+              - id: clean
+            description: "Städskri"
