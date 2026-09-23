@@ -23,32 +23,22 @@ type adminData struct {
 	CleaningLeaderboard []CleanerPoints
 }
 
-func FridgePerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
-	_, perms, err := Auth(w, r, s.oauth2Config)
+func HasAnyPerms(w http.ResponseWriter, r *http.Request, s *Service, permIds []string) bool {
+	_, userPerms, err := Auth(w, r, s.oauth2Config)
 	if err != nil {
 		slog.Error("Authentication error:", err)
 		http.Error(w, "Authentication error", http.StatusInternalServerError)
 		return false
 	}
-	if !(HasPermission(perms, "fridge") || HasPermission(perms, "admin")) {
-		http.Redirect(w, r, "/about", http.StatusSeeOther)
-		return false
-	}
-	return true
-}
 
-func CleaningPerms(w http.ResponseWriter, r *http.Request, s *Service) bool {
-	_, perms, err := Auth(w, r, s.oauth2Config)
-	if err != nil {
-		slog.Error("Authentication error:", err)
-		http.Error(w, "Authentication error", http.StatusInternalServerError)
-		return false
+	for _, perm := range permIds {
+		if HasPermission(userPerms, perm) {
+			return true
+		}
 	}
-	if !(HasPermission(perms, "clean") || HasPermission(perms, "admin")) {
-		http.Redirect(w, r, "/about", http.StatusSeeOther)
-		return false
-	}
-	return true
+
+	http.Redirect(w, r, "/about", http.StatusSeeOther)
+	return false
 }
 
 func SemesterDate() time.Time {
@@ -130,7 +120,7 @@ func (s *Service) adminPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
-	if !FridgePerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "admin"}) {
 		return
 	}
 
@@ -184,7 +174,7 @@ func (s *Service) addFridgeItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) editFridgeItem(w http.ResponseWriter, r *http.Request) {
-	if !FridgePerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "admin"}) {
 		return
 	}
 
@@ -212,7 +202,7 @@ func (s *Service) editFridgeItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) cancelFridgeEdit(w http.ResponseWriter, r *http.Request) {
-	if !FridgePerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "admin"}) {
 		return
 	}
 
@@ -241,7 +231,7 @@ func (s *Service) cancelFridgeEdit(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) saveFridgeItemEdit(w http.ResponseWriter, r *http.Request) {
-	if !FridgePerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "admin"}) {
 		return
 	}
 
@@ -295,7 +285,7 @@ func (s *Service) saveFridgeItemEdit(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) confirmDeleteFridgeItem(w http.ResponseWriter, r *http.Request) {
-	if !FridgePerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "admin"}) {
 		return
 	}
 
@@ -314,7 +304,7 @@ func (s *Service) confirmDeleteFridgeItem(w http.ResponseWriter, r *http.Request
 }
 
 func (s *Service) removeFridgeItem(w http.ResponseWriter, r *http.Request) {
-	if !FridgePerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "admin"}) {
 		return
 	}
 
@@ -337,7 +327,7 @@ type Item struct {
 }
 
 func (s *Service) updateFridgeItemPriority(w http.ResponseWriter, r *http.Request) {
-	if !FridgePerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "admin"}) {
 		return
 	}
 
@@ -369,7 +359,7 @@ func (s *Service) updateFridgeItemPriority(w http.ResponseWriter, r *http.Reques
 }
 
 func (s *Service) searchSSOusers(w http.ResponseWriter, r *http.Request) {
-	if !(FridgePerms(w, r, s) || CleaningPerms(w, r, s)) {
+	if !HasAnyPerms(w, r, s, []string{"fridge", "clean", "admin"}) {
 		return
 	}
 
@@ -438,7 +428,7 @@ func (s *Service) searchSSOusers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) addCleaningPoint(w http.ResponseWriter, r *http.Request) {
-	if !CleaningPerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"clean", "admin"}) {
 		return
 	}
 
@@ -523,7 +513,7 @@ func (s *Service) addCleaningPoint(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) searchCleaningUser(w http.ResponseWriter, r *http.Request) {
-	if !CleaningPerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"clean", "admin"}) {
 		return
 	}
 
@@ -589,7 +579,7 @@ func (s *Service) searchCleaningUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) deleteCleaningPoint(w http.ResponseWriter, r *http.Request) {
-	if !CleaningPerms(w, r, s) {
+	if !HasAnyPerms(w, r, s, []string{"clean", "admin"}) {
 		return
 	}
 
