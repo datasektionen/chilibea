@@ -130,8 +130,14 @@ func (s *Service) aboutPage(w http.ResponseWriter, r *http.Request) {
 				return 0
 			case "Lokalmästare":
 				return 1
-			default:
+			case "Städskrii":
 				return 2
+			case "Ljud- och ljusansvarig":
+				return 3
+			case "Mulle/Mullerina Schmeck":
+				return 4
+			default:
+				return 5
 			}
 		}
 		if order := cmp.Compare(rank(a.Name), rank(b.Name)); order != 0 {
