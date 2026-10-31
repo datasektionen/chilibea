@@ -1,13 +1,16 @@
 package main
 
 import (
+	"cmp"
 	"context"
 	"fmt"
 	"html/template"
 	"log/slog"
 	"net/http"
 	"os"
+	"slices"
 	"strconv"
+	"strings"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -117,6 +120,25 @@ func (s *Service) aboutPage(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+
+	// Ensure that Konglig Lokalchef is displayed first, followed by
+	// Lokalmästare and then the other in alphabetical order.
+	slices.SortStableFunc(groups, func(a, b Group) int {
+		rank := func(str string) int {
+			switch str {
+			case "Konglig Lokalchef":
+				return 0
+			case "Lokalmästare":
+				return 1
+			default:
+				return 2
+			}
+		}
+		if order := cmp.Compare(rank(a.Name), rank(b.Name)); order != 0 {
+			return order
+		}
+		return strings.Compare(a.Name, b.Name)
+	})
 
 	data := IndexData{
 		Groups: groups,
